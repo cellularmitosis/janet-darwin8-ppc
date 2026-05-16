@@ -1,0 +1,39 @@
+From 51e4dc76e1b1e48f9c0da5fcc770a3caece1446a Mon Sep 17 00:00:00 2001
+From: janet-darwin8-ppc <janet-darwin8-ppc@local>
+Date: Fri, 15 May 2026 22:50:40 -0500
+Subject: [PATCH 4/4] Makefile: honor CPPFLAGS in both boot and final compile
+ phases
+
+Standard make idiom: CPPFLAGS carries preprocessor flags (-D, -I)
+that should apply uniformly to every C compile.  Janets Makefile
+threaded CFLAGS through BUILD_CFLAGS but not BOOT_CFLAGS, and
+never read CPPFLAGS at all - so environment-supplied -I and -D
+were silently dropped during the bootstrap phase.
+
+This bit us on Mac OS X 10.4 Tiger: the macports-legacy-support
+shim provides an O_CLOEXEC #define via its <sys/fcntl.h> wrapper,
+but you only see it if -I.../LegacySupport is on the compile
+command line.  CFLAGS got it to the final compile units; the
+bootstrap-phase compiles (which still include src/core/util.c)
+didnt see it.
+
+Folding CPPFLAGS into COMMON_CFLAGS makes it visible to both
+phases.  Also matches the convention of every other autotools/cmake
+build the casual user is familiar with.
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 8e2523b3..28c3da34 100644
+--- a/Makefile
++++ b/Makefile
+@@ -58,7 +58,7 @@ LDFLAGS?=-rdynamic
+ LIBJANET_LDFLAGS?=$(LDFLAGS)
+ RUN:=$(RUN)
+ 
+-COMMON_CFLAGS:=-std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC
++COMMON_CFLAGS:=-std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC $(CPPFLAGS)
+ BOOT_CFLAGS:=-DJANET_BOOTSTRAP -DJANET_BUILD=$(JANET_BUILD) -O0 $(COMMON_CFLAGS) -g
+ BUILD_CFLAGS:=$(CFLAGS) $(COMMON_CFLAGS)
+ 

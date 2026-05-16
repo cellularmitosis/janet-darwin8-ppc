@@ -1,0 +1,38 @@
+From d2acfcbed2d99824efca9e68a78f1bb33cc3294d Mon Sep 17 00:00:00 2001
+From: janet-darwin8-ppc <janet-darwin8-ppc@local>
+Date: Fri, 15 May 2026 22:47:27 -0500
+Subject: [PATCH 3/4] features.h: auto-define JANET_NO_PROCESSES on pre-Leopard
+ Apple
+
+Tiger lacks <spawn.h> and macports-legacy-support doesn't backfill
+posix_spawn, so os/spawn cannot link on pre-Leopard Apple.  Auto-
+enable JANET_NO_PROCESSES there.  Combined with the os.c change in
+the previous commit, this lets pre-Leopard builds complete without
+any build-system flags - the same source tree just works.
+
+A real fork+execve fallback for os/spawn is a separate piece of
+work (project M1.b).
+---
+ src/core/features.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/src/core/features.h b/src/core/features.h
+index 92602130..baf6acf2 100644
+--- a/src/core/features.h
++++ b/src/core/features.h
+@@ -60,6 +60,15 @@
+ #define _GNU_SOURCE
+ #endif
+ 
++/* Mac OS X 10.4 Tiger lacks <spawn.h> / posix_spawn{,p}; the
++ * macports-legacy-support shim does not backfill it either.
++ * Disable os/spawn, os/execute, os/shell, etc. there.  A fork+execve
++ * fallback is a separate piece of work; this just lets the build
++ * complete on Tiger. */
++#if defined(JANET_APPLE_PRE_LEOPARD) && !defined(JANET_NO_PROCESSES)
++# define JANET_NO_PROCESSES
++#endif
++
+ #if defined(WIN32) || defined(_WIN32)
+ #define WIN32_LEAN_AND_MEAN
+ #endif

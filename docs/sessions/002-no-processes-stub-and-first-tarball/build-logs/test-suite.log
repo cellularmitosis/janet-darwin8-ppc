@@ -1,0 +1,38 @@
+PASS  test/suite-array.janet
+PASS  test/suite-asm.janet
+PASS  test/suite-boot.janet
+PASS  test/suite-buffer.janet
+PASS  test/suite-bundle.janet
+PASS  test/suite-capi.janet
+PASS  test/suite-cfuns.janet
+PASS  test/suite-compile.janet
+PASS  test/suite-corelib.janet
+PASS  test/suite-debug.janet
+SKIP  test/suite-ev.janet (uses os/spawn)
+SKIP  test/suite-ev2.janet (uses os/spawn)
+PASS  test/suite-ffi.janet
+SKIP  test/suite-filewatch.janet (uses os/spawn)
+PASS  test/suite-inttypes.janet
+PASS  test/suite-io.janet
+PASS  test/suite-marsh.janet
+PASS  test/suite-math.janet
+PASS  test/suite-net.janet
+FAIL  test/suite-os.janet (rc=1)
+      Starting suite test/suite-os.janet...
+      test/suite-os.janet:145:14: compile error: unknown symbol os/execute
+PASS  test/suite-parse.janet
+PASS  test/suite-peg.janet
+PASS  test/suite-pp.janet
+PASS  test/suite-specials.janet
+PASS  test/suite-string.janet
+PASS  test/suite-strtod.janet
+PASS  test/suite-struct.janet
+PASS  test/suite-symcache.janet
+PASS  test/suite-table.janet
+PASS  test/suite-tuple.janet
+PASS  test/suite-unknown.janet
+PASS  test/suite-value.janet
+PASS  test/suite-vm.janet
+
+=== summary: 29 passed, 1 failed, 3 skipped ===
+failed: test/suite-os.janet

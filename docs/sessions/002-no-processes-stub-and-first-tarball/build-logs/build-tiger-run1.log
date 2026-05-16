@@ -1,0 +1,382 @@
+=== build-tiger.sh ===
+    host:        ibookg38
+    arch:        g3
+    janet ver:   1.41.3
+    prefix:      /opt/janet-1.41.3
+    tarball:     janet-1.41.3-tiger-g3.tar.gz
+    remote dir:  ibookg38:tmp/janet-build
+
+=== rsync source ===
+Transfer starting: 243 files
+created directory tmp/janet-build
+./
+.builds/
+.builds/freebsd.yml
+.github/
+.builds/linux.yml
+.builds/openbsd.yml
+.gitattributes
+.github/cosmo/
+.github/workflows/
+.github/cosmo/setup
+assets/
+examples/
+.github/workflows/codeql.yml
+.github/workflows/release.yml
+.github/workflows/test.yml
+.gitignore
+CHANGELOG.md
+CONTRIBUTING.md
+LICENSE
+Makefile
+examples/ffi/
+examples/jitfn/
+examples/numarray/
+examples/numarray/test/
+examples/sample-bad-bundle1/
+README.md
+assets/icon.ico
+assets/icon_svg.svg
+assets/janet-big.png
+assets/janet-w200.png
+build_win.bat
+examples/3sum.janet
+examples/abstract-unix-socket.janet
+examples/assembly.janet
+examples/async-execute.janet
+examples/channel.janet
+examples/chatserver.janet
+examples/colors.janet
+examples/debug.janet
+examples/debugger.janet
+examples/echoclient.janet
+examples/echoserve.janet
+examples/error.janet
+examples/evlocks.janet
+examples/evsleep.janet
+examples/ffi/gtk.janet
+examples/ffi/so.c
+examples/ffi/test.janet
+examples/ffi/win32.janet
+examples/filewatch.janet
+examples/fizzbuzz.janet
+examples/hello.janet
+examples/iterate-fiber.janet
+examples/jitfn/hello.bin
+examples/jitfn/hello.nasm
+examples/jitfn/jitfn.janet
+examples/lazyseqs.janet
+examples/life.janet
+examples/lineloop.janet
+examples/marshal-stress.janet
+examples/maxtriangle.janet
+examples/numarray/.gitignore
+examples/numarray/numarray.c
+examples/numarray/project.janet
+examples/numarray/test/numarray_tests.janet
+examples/posix-exec.janet
+examples/primes.janet
+examples/rtest.janet
+examples/sample-bad-bundle2/
+examples/sample-bundle/
+examples/sample-bundle-aliases/
+examples/sample-bundle/bundle/
+examples/sample-dep1/
+examples/sample-dep1/bundle/
+examples/sample-dep2/
+examples/sample-dep2/bundle/
+src/
+src/boot/
+src/conf/
+src/core/
+src/include/
+src/mainclient/
+test/
+test/amalg/
+test/c/
+test/fuzzers/
+tools/
+tools/afl/
+tools/afl/parser_testcases/
+tools/hashbench/
+examples/sample-bad-bundle1/info.jdn
+examples/sample-bad-bundle2/badmod.janet
+examples/sample-bad-bundle2/bundle.janet
+examples/sample-bad-bundle2/info.jdn
+examples/sample-bundle-aliases/aliases-mod.janet
+examples/sample-bundle-aliases/bundle.janet
+examples/sample-bundle-aliases/info.jdn
+examples/sample-bundle/bundle/info.jdn
+examples/sample-bundle/bundle/init.janet
+examples/sample-bundle/mymod.janet
+examples/sample-dep1/bundle/info.jdn
+examples/sample-dep1/bundle/init.janet
+examples/sample-dep1/dep1.janet
+examples/sample-dep2/bundle/info.jdn
+examples/sample-dep2/bundle/init.janet
+examples/sample-dep2/dep2.janet
+examples/select.janet
+examples/select2.janet
+examples/sigaction.janet
+examples/tcpclient.janet
+examples/tcpserver.janet
+examples/threaded-channels.janet
+examples/udpclient.janet
+examples/udpserver.janet
+examples/urlloader.janet
+examples/weak-tables.janet
+janet.1
+janet_win.rc
+meson.build
+meson_options.txt
+plan9.mk
+src/boot/array_test.c
+src/boot/boot.c
+src/boot/boot.janet
+src/boot/buffer_test.c
+src/boot/number_test.c
+src/boot/system_test.c
+src/boot/table_test.c
+src/boot/tests.h
+src/conf/janetconf.h
+src/core/abstract.c
+src/core/array.c
+src/core/asm.c
+src/core/buffer.c
+src/core/bytecode.c
+src/core/capi.c
+src/core/cfuns.c
+src/core/compile.c
+src/core/compile.h
+src/core/corelib.c
+src/core/debug.c
+src/core/emit.c
+src/core/emit.h
+src/core/ev.c
+src/core/features.h
+src/core/ffi.c
+src/core/fiber.c
+src/core/fiber.h
+src/core/filewatch.c
+src/core/gc.c
+src/core/gc.h
+src/core/inttypes.c
+src/core/io.c
+src/core/marsh.c
+src/core/math.c
+src/core/net.c
+src/core/os.c
+src/core/parse.c
+src/core/peg.c
+src/core/pp.c
+src/core/regalloc.c
+src/core/regalloc.h
+src/core/run.c
+src/core/specials.c
+src/core/state.c
+src/core/state.h
+src/core/string.c
+src/core/strtod.c
+src/core/struct.c
+src/core/symcache.c
+src/core/symcache.h
+src/core/table.c
+src/core/tuple.c
+src/core/util.c
+src/core/util.h
+src/core/value.c
+src/core/vector.c
+src/core/vector.h
+src/core/vm.c
+src/core/wrap.c
+src/include/janet.h
+src/mainclient/shell.c
+test/amalg/main.c
+test/c/test-gc-pcall.c
+test/fuzzers/fuzz_dostring.c
+test/helper.janet
+test/suite-array.janet
+test/suite-asm.janet
+test/suite-boot.janet
+test/suite-buffer.janet
+test/suite-bundle.janet
+test/suite-capi.janet
+test/suite-cfuns.janet
+test/suite-compile.janet
+test/suite-corelib.janet
+test/suite-debug.janet
+test/suite-ev.janet
+test/suite-ev2.janet
+test/suite-ffi.janet
+test/suite-filewatch.janet
+test/suite-inttypes.janet
+test/suite-io.janet
+test/suite-marsh.janet
+test/suite-math.janet
+test/suite-net.janet
+test/suite-os.janet
+test/suite-parse.janet
+test/suite-peg.janet
+test/suite-pp.janet
+test/suite-specials.janet
+test/suite-string.janet
+tools/msi/
+test/suite-strtod.janet
+test/suite-struct.janet
+test/suite-symcache.janet
+test/suite-table.janet
+test/suite-tuple.janet
+test/suite-unknown.janet
+test/suite-value.janet
+test/suite-vm.janet
+tools/.keep
+tools/afl/README.md
+tools/afl/aggregate_cases.sh
+tools/afl/fuzz.sh
+tools/afl/generate_unmarshal_testcases.janet
+tools/afl/parser_runner.janet
+tools/afl/parser_testcases/simple.janet
+tools/afl/pp_runner.janet
+tools/afl/prepare_to_fuzz.sh
+tools/afl/unmarshal_runner.janet
+tools/amalg.janet
+tools/format.sh
+tools/gendoc.janet
+tools/hashbench/ints1.janet
+tools/msi/JanetDialog.png
+tools/msi/JanetTopBanner.png
+tools/msi/LICENSE.rtf
+tools/msi/janet.wxs
+tools/patch-header.janet
+tools/removecr.janet
+tools/symcharsgen.c
+tools/tm_lang_gen.janet
+tools/update_copyright.janet
+
+sent 2356793 bytes  received 4176 bytes  2328142 bytes/sec
+total size is 2336345  speedup is 0.99
+
+=== remote build ===
+=== build-tiger-remote.sh ===
+    src:    /Users/macuser/tmp/janet-build
+    stage:  /Users/macuser/tmp/janet-staging-1.41.3
+    prefix: /opt/janet-1.41.3
+
+=== compiler ===
+gcc-4.9 (GCC) 4.9.4
+=== make clean ===
+rm -rf build vgcore.* callgrind.*
+rm -rf test/install/build test/install/modpath
+=== make ===
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/abstract.boot.o -c src/core/abstract.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/array.boot.o -c src/core/array.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/asm.boot.o -c src/core/asm.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/buffer.boot.o -c src/core/buffer.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/bytecode.boot.o -c src/core/bytecode.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/capi.boot.o -c src/core/capi.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/cfuns.boot.o -c src/core/cfuns.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/compile.boot.o -c src/core/compile.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/corelib.boot.o -c src/core/corelib.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/debug.boot.o -c src/core/debug.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/emit.boot.o -c src/core/emit.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/ev.boot.o -c src/core/ev.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/ffi.boot.o -c src/core/ffi.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/fiber.boot.o -c src/core/fiber.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/filewatch.boot.o -c src/core/filewatch.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/gc.boot.o -c src/core/gc.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/inttypes.boot.o -c src/core/inttypes.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/io.boot.o -c src/core/io.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/marsh.boot.o -c src/core/marsh.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/math.boot.o -c src/core/math.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/net.boot.o -c src/core/net.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/os.boot.o -c src/core/os.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/parse.boot.o -c src/core/parse.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/peg.boot.o -c src/core/peg.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/pp.boot.o -c src/core/pp.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/regalloc.boot.o -c src/core/regalloc.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/run.boot.o -c src/core/run.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/specials.boot.o -c src/core/specials.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/state.boot.o -c src/core/state.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/string.boot.o -c src/core/string.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/strtod.boot.o -c src/core/strtod.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/struct.boot.o -c src/core/struct.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/symcache.boot.o -c src/core/symcache.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/table.boot.o -c src/core/table.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/tuple.boot.o -c src/core/tuple.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/util.boot.o -c src/core/util.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/value.boot.o -c src/core/value.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/vector.boot.o -c src/core/vector.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/vm.boot.o -c src/core/vm.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/core/wrap.boot.o -c src/core/wrap.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/boot/array_test.boot.o -c src/boot/array_test.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/boot/boot.boot.o -c src/boot/boot.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/boot/buffer_test.boot.o -c src/boot/buffer_test.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/boot/number_test.boot.o -c src/boot/number_test.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/boot/system_test.boot.o -c src/boot/system_test.c
+In file included from /opt/macports-legacy-support-20221029/include/LegacySupport/assert.h:3:0,
+                 from src/boot/system_test.c:24:
+src/boot/system_test.c: In function 'system_test':
+src/boot/system_test.c:63:17: warning: the comparison will always evaluate as 'true' for the address of 'janet_wrap_nil' will never be NULL [-Waddress]
+     assert(NULL != &janet_wrap_nil);
+                 ^
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/boot/table_test.boot.o -c src/boot/table_test.c
+gcc-4.9 -DJANET_BOOTSTRAP -DJANET_BUILD="\"local\"" -O0 -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -g -o build/janet_boot build/core/abstract.boot.o build/core/array.boot.o build/core/asm.boot.o build/core/buffer.boot.o build/core/bytecode.boot.o build/core/capi.boot.o build/core/cfuns.boot.o build/core/compile.boot.o build/core/corelib.boot.o build/core/debug.boot.o build/core/emit.boot.o build/core/ev.boot.o build/core/ffi.boot.o build/core/fiber.boot.o build/core/filewatch.boot.o build/core/gc.boot.o build/core/inttypes.boot.o build/core/io.boot.o build/core/marsh.boot.o build/core/math.boot.o build/core/net.boot.o build/core/os.boot.o build/core/parse.boot.o build/core/peg.boot.o build/core/pp.boot.o build/core/regalloc.boot.o build/core/run.boot.o build/core/specials.boot.o build/core/state.boot.o build/core/string.boot.o build/core/strtod.boot.o build/core/struct.boot.o build/core/symcache.boot.o build/core/table.boot.o build/core/tuple.boot.o build/core/util.boot.o build/core/value.boot.o build/core/vector.boot.o build/core/vm.boot.o build/core/wrap.boot.o build/boot/array_test.boot.o build/boot/boot.boot.o build/boot/buffer_test.boot.o build/boot/number_test.boot.o build/boot/system_test.boot.o build/boot/table_test.boot.o -lm -lpthread -ldl
+ld: warning: object file compiled with -mlong-branch which is no longer needed. To remove this warning, recompile without -mlong-branch: /usr/lib/crt1.o
+build/janet_boot . JANET_PATH '/opt/janet-1.41.3/lib/janet' > build/c/janet.c
+cksum build/c/janet.c
+710131406 3322845 build/c/janet.c
+gcc-4.9 -O2 -g -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -c build/c/janet.c -o build/janet.o
+cp src/mainclient/shell.c build/c/shell.c
+gcc-4.9 -O2 -g -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -c build/c/shell.c -o build/shell.o
+gcc-4.9 -L/opt/macports-legacy-support-20221029/lib -lMacportsLegacySupport -O2 -g -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -o build/janet build/janet.o build/shell.o -lm -lpthread -ldl
+ld: warning: object file compiled with -mlong-branch which is no longer needed. To remove this warning, recompile without -mlong-branch: /usr/lib/crt1.o
+ar rcs build/libjanet.a build/janet.o build/shell.o
+./build/janet tools/patch-header.janet src/include/janet.h src/conf/janetconf.h build/janet.h
+gcc-4.9 -L/opt/macports-legacy-support-20221029/lib -lMacportsLegacySupport -O2 -g -std=c99 -Wall -Wextra -Isrc/include -Isrc/conf -fvisibility=hidden -fPIC -I/opt/macports-legacy-support-20221029/include/LegacySupport -Wl,-install_name,libjanet.1.41.dylib -shared -o build/libjanet.dylib build/janet.o build/shell.o -lm -lpthread -ldl
+=== make install (DESTDIR=/Users/macuser/tmp/janet-staging-1.41.3) ===
+echo 'prefix=/opt/janet-1.41.3' > build/janet.pc
+echo 'exec_prefix=${prefix}' >> build/janet.pc
+echo 'includedir=/opt/janet-1.41.3/include/janet' >> build/janet.pc
+echo 'libdir=/opt/janet-1.41.3/lib' >> build/janet.pc
+echo "" >> build/janet.pc
+echo "Name: janet" >> build/janet.pc
+echo "Url: https://janet-lang.org" >> build/janet.pc
+echo "Description: Library for the Janet programming language." >> build/janet.pc
+build/janet -e '(print "Version: " janet/version)' >> build/janet.pc
+echo 'Cflags: -I${includedir}' >> build/janet.pc
+echo 'Libs: -L${libdir} -ljanet' >> build/janet.pc
+echo 'Libs.private: -lm -lpthread -ldl' >> build/janet.pc
+mkdir -p '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/bin'
+cp build/janet '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/bin/janet'
+strip -x -S '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/bin/janet'
+mkdir -p '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/include/janet'
+cp -r build/janet.h '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/include/janet'
+ln -sf ./janet/janet.h '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/include/janet.h'
+mkdir -p '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/lib/janet'
+mkdir -p '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/lib'
+if test Darwin = Darwin ; then \
+	cp build/libjanet.dylib '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/lib/libjanet.1.41.3-dev.dylib' ; \
+	ln -sf libjanet.1.41.dylib '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/lib/libjanet.dylib' ; \
+	ln -sf libjanet.1.41.3-dev.dylib /Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/lib/libjanet.1.41.dylib ; \
+else \
+	cp build/libjanet.dylib '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/lib/libjanet.so.1.41.3-dev' ; \
+	ln -sf libjanet.1.41.dylib '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/lib/libjanet.so' ; \
+	ln -sf libjanet.so.1.41.3-dev /Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/lib/libjanet.1.41.dylib ; \
+fi
+cp build/libjanet.a '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/lib/libjanet.a'
+mkdir -p '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/share/man/man1/'
+cp janet.1 '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/share/man/man1/'
+mkdir -p '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/lib/pkgconfig'
+cp build/janet.pc '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/lib/pkgconfig/janet.pc'
+cp 'build/janet.lib' '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/lib' || echo 'no import lib to install (mingw only)'
+cp: build/janet.lib: No such file or directory
+no import lib to install (mingw only)
+cp 'build/libjanet.lib' '/Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/lib' || echo 'no import lib to install (mingw only)'
+cp: build/libjanet.lib: No such file or directory
+no import lib to install (mingw only)
+[ -z '/Users/macuser/tmp/janet-staging-1.41.3' ] && true || echo "You can ignore this error for non-Linux systems or local installs"
+You can ignore this error for non-Linux systems or local installs
+rm build/janet.pc
+=== bundle libMacportsLegacySupport.dylib ===
+=== install_name_tool wiring ===
+missing /Users/macuser/tmp/janet-staging-1.41.3/opt/janet-1.41.3/lib/libjanet.1.41.3.dylib

@@ -1,0 +1,31 @@
+=== Test 1: JANET_PATH (no sudo) ===
+msg:                hello from janet-lzo on tiger ppc — ibookg37 clean host
+compressed bytes:   61
+decompressed bytes: 57
+round-trip ok:      true
+
+=== larger payload ===
+input bytes:        12000
+compressed bytes:   83
+decompressed bytes: 12000
+compression ratio:  0.007
+round-trip ok:      true
+
+=== marshal/unmarshal round-trip ===
+obj  : <struct 0x58CA3900>
+round: <struct 0xA8CD3900>
+equal: true
+
+=== Test 2: canonical syspath /opt/janet-1.41.3-dev/lib/janet/lzo.so ===
+-rwxr-xr-x   1 macuser  admin  10480 May 16 00:14 /opt/janet-1.41.3-dev/lib/janet/lzo.so
+hello from /opt/janet-1.41.3-dev/lib/janet/lzo.so
+60000-byte payload: 60000 -> 289, ratio 0.0048, ok=true
+
+
+=== otool -L (installed) ===
+/opt/janet-1.41.3-dev/lib/janet/lzo.so:
+	/Users/macuser/tmp/janet-lzo/build/lzo.so (compatibility version 0.0.0, current version 0.0.0)
+	/opt/lzo-2.10/lib/liblzo2.2.dylib (compatibility version 3.0.0, current version 3.0.0)
+	/usr/lib/libgcc_s.1.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/opt/gcc-4.9.4/lib/libgcc_s.1.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 88.1.12)

@@ -92,7 +92,7 @@ Legend: ✅ Working / 🟡 Partial or pinned / ❌ Missing.
 | Surface | Status | Notes |
 |---|---|---|
 | Pure-Janet REPL (`janet -e`) | ✅ M1.a | Tarball builds clean against macports-legacy-support; runs on clean ibookg37 install (session 002). |
-| Native module loading (smoke = [janet-lzo](https://github.com/cellularmitosis/janet-lzo)) | 🟡 M1.a (pending) | Tarball wires `@loader_path` for sibling libs; janet-lzo precompiled-smoke not run yet.  Roadmap M1.a item 5. |
+| Native module loading (smoke = [janet-lzo](https://github.com/cellularmitosis/janet-lzo)) | ✅ M1.a | `lzo.c` built via [`scripts/build-janet-lzo-remote.sh`](scripts/build-janet-lzo-remote.sh) (jpm's canonical darwin recipe: `-fPIC -shared -undefined dynamic_lookup`).  Dropped into `lib/janet/lzo.so` and round-tripped via `(import lzo) (lzo/decompress (lzo/compress @"hello"))` on ibookg37 (clean Tiger G3) — session 003. |
 | `os/spawn` (subprocess) | ❌ M1.b | The `posix_spawn` fork+execve fallback — the bit the 1.27.0 leopard.sh sketch never got working.  M1.b gate. |
 | `jpm install` from git URL | ❌ M1.b | Depends on `os/spawn`; lights up once the above lands.  M1.b adds the `jpm install janet-lzo`-on-clean-Tiger end-to-end smoke. |
 | AltiVec via `-mcpu=7450 -maltivec` | ❌ M2 | Compiler flags only; no source patches. |

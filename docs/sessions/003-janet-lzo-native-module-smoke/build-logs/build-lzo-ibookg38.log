@@ -1,0 +1,28 @@
+=== build-janet-lzo-remote.sh ===
+    src:         /Users/macuser/tmp/janet-lzo
+    out:         /Users/macuser/tmp/janet-lzo/build/lzo.so
+    JANET:       /opt/janet-1.41.3-dev
+    LZO:         /opt/lzo-2.10
+    CC:          gcc-4.9 (GCC) 4.9.4
+
+=== compile + link ===
++ gcc-4.9 -std=c99 -Wall -Wextra -Os -fPIC -I/opt/janet-1.41.3-dev/include/janet -I/opt/lzo-2.10/include -shared -undefined dynamic_lookup -lpthread -L/opt/lzo-2.10/lib -llzo2 -o /Users/macuser/tmp/janet-lzo/build/lzo.so lzo.c
++ set +x
+
+=== otool -L lzo.so ===
+/Users/macuser/tmp/janet-lzo/build/lzo.so:
+	/Users/macuser/tmp/janet-lzo/build/lzo.so (compatibility version 0.0.0, current version 0.0.0)
+	/opt/lzo-2.10/lib/liblzo2.2.dylib (compatibility version 3.0.0, current version 3.0.0)
+	/usr/lib/libgcc_s.1.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/opt/gcc-4.9.4/lib/libgcc_s.1.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 88.1.12)
+
+=== file lzo.so ===
+/Users/macuser/tmp/janet-lzo/build/lzo.so: Mach-O dynamically linked shared library ppc
+
+=== staged smoke (against /opt/janet-1.41.3-dev) ===
+compressed bytes:   37
+decompressed bytes: 33
+round-trip ok:      true
+
+=== done ===

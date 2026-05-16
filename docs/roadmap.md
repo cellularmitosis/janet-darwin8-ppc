@@ -46,17 +46,22 @@ Each item is roughly one session.
      this stage; mark and skip those, address in M1.b.
    - Any *other* FAIL is a session-task.
 
-5. **janet-lzo precompiled smoke — validates the native-module
-   loader without needing jpm install.**
-   - Build janet-lzo against our `/opt/janet-X.Y.Z/` on the build
-     host (using `gcc` directly or a simple Makefile target — not
-     `jpm install`, which needs `os/spawn`).
-   - Drop the resulting `.so` into the right Janet module path
-     manually.
-   - Verify `(import lzo) (lzo/decompress (lzo/compress @"hello"))`
-     round-trips on **ibookg37**.
-   - This validates the `@loader_path` wiring + native-module
-     loader independent of jpm.
+5. **✅ janet-lzo precompiled smoke — validates the native-module
+   loader without needing jpm install.** *(session 003)*
+   - Built `lzo.so` on ibookg38 via
+     [`scripts/build-janet-lzo-remote.sh`](../scripts/build-janet-lzo-remote.sh),
+     applying jpm's canonical macOS recipe directly:
+     `-fPIC -shared -undefined dynamic_lookup -lpthread` against
+     `/opt/janet-1.41.3-dev/include/janet` and `/opt/lzo-2.10`.
+   - Dropped into `/opt/janet-1.41.3-dev/lib/janet/lzo.so` on
+     ibookg37 (clean Tiger G3).
+   - `(import lzo) (lzo/decompress (lzo/compress @"hello"))`
+     round-trips; 60 KB payload compresses to 0.5 % and round-trips
+     byte-exact; marshal/unmarshal through lzo round-trips a
+     nested struct.
+   - Native-module loader + `@loader_path`-resolved bundled
+     `libMacportsLegacySupport.dylib` proven against a clean host
+     without `jpm install`.
 
 6. **First release.**
    - Version: v0.1.0 (or whatever feels right; we'll set the cadence

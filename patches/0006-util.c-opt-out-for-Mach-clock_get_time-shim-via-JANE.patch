@@ -1,0 +1,50 @@
+From a592f85473c22549357000b2989fbed8dc60baa1 Mon Sep 17 00:00:00 2001
+From: janet-darwin8-ppc <janet-darwin8-ppc@local>
+Date: Sat, 16 May 2026 01:48:18 -0500
+Subject: [PATCH 6/6] util.c: opt-out for Mach clock_get_time shim via
+ JANET_NO_MACH_CLOCK_SHIM
+
+The Mach-based clock_get_time fallback in janet_gettime() is gated
+on "JANET_APPLE && !defined(MAC_OS_X_VERSION_10_12)" -- pre-10.12
+Apple, identified by the absence of the 10.12 Availability marker.
+That fires on Mac OS X 10.4 Tiger because the 10.4 SDK does not
+ship MAC_OS_X_VERSION_10_12.
+
+But macports-legacy-support (and other shim libraries used on
+older macOS) provides a working clock_gettime() down to Tiger.
+When linked against such a shim, the Mach fallback becomes dead
+code that shadows a perfectly good libc function.
+
+This patch adds an opt-out preprocessor flag.  When
+JANET_NO_MACH_CLOCK_SHIM is defined, the #elif falls through to
+the POSIX #else branch, which calls clock_gettime() directly
+(resolved via the shim library).
+
+No behavior change when JANET_NO_MACH_CLOCK_SHIM is not defined;
+the existing Mach shim still runs by default.  Tiger builds
+linking against macports-legacy-support can pass
+-DJANET_NO_MACH_CLOCK_SHIM via CPPFLAGS (now plumbed through
+both boot and final compile phases by the previous patch).
+---
+ src/core/util.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/src/core/util.c b/src/core/util.c
+index 66498384..82a0b96f 100644
+--- a/src/core/util.c
++++ b/src/core/util.c
+@@ -999,8 +999,12 @@ int janet_gettime(struct timespec *spec, enum JanetTimeSource source) {
+     }
+     return 0;
+ }
+-/* clock_gettime() wasn't available on Mac until 10.12. */
+-#elif defined(JANET_APPLE) && !defined(MAC_OS_X_VERSION_10_12)
++/* clock_gettime() wasn't available on Mac until 10.12.  Define
++ * JANET_NO_MACH_CLOCK_SHIM to opt out of the Mach fallback and use
++ * clock_gettime() directly -- useful when linking against a shim
++ * library (e.g. macports-legacy-support) that provides
++ * clock_gettime() on earlier macOS. */
++#elif defined(JANET_APPLE) && !defined(MAC_OS_X_VERSION_10_12) && !defined(JANET_NO_MACH_CLOCK_SHIM)
+ #include <mach/clock.h>
+ #include <mach/mach.h>
+ int janet_gettime(struct timespec *spec, enum JanetTimeSource source) {

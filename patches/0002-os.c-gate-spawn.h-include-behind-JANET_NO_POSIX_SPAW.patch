@@ -1,7 +1,7 @@
-From abcef1d2de0884b8ec830097878ccf37d8628916 Mon Sep 17 00:00:00 2001
+From 7a8a2725e78c4551df072ddb335e6dbd593274f2 Mon Sep 17 00:00:00 2001
 From: Jason Pepas <jasonpepas@gmail.com>
 Date: Sat, 16 May 2026 00:46:19 -0500
-Subject: [PATCH 2/5] os.c: gate <spawn.h> include behind JANET_NO_POSIX_SPAWN
+Subject: [PATCH 2/6] os.c: gate <spawn.h> include behind JANET_NO_POSIX_SPAWN
 
 Tiger / pre-Leopard macOS lacks <spawn.h> and macports-legacy-support
 does not backfill posix_spawn{,p}.  Introduce a positive feature

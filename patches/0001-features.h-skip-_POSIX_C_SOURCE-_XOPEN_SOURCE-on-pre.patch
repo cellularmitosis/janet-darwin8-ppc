@@ -1,7 +1,7 @@
-From bbb8a6786a8689fbb6d9f937257ab86350db4529 Mon Sep 17 00:00:00 2001
+From e144346361a0c2100e43ef358c5a0117c84d113a Mon Sep 17 00:00:00 2001
 From: janet-darwin8-ppc <janet-darwin8-ppc@local>
 Date: Fri, 15 May 2026 22:32:33 -0500
-Subject: [PATCH 1/5] features.h: skip _POSIX_C_SOURCE / _XOPEN_SOURCE on
+Subject: [PATCH 1/6] features.h: skip _POSIX_C_SOURCE / _XOPEN_SOURCE on
  pre-Leopard macOS
 
 On Mac OS X 10.4 Tiger (and earlier), defining _POSIX_C_SOURCE or

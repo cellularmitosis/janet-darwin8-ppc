@@ -1,6 +1,6 @@
 # janet-darwin8-ppc
 
-<center><img src="docs/media/janet-tiger.jpg"></center>
+<center><img src="docs/media/janet-tiger.jpg" width="480"></center>
 
 [Janet](https://github.com/janet-lang/janet) — the small Lisp-like
 programming language — resurrected for **Mac OS X 10.4 Tiger /
@@ -18,20 +18,31 @@ hardware.
 
 ## Status
 
-**M1.a released** ([v0.1.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.1.0)):
+**M1.b released** ([v0.2.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.0)):
 
-- [`janet-1.41.3-dev-tiger-g3.tar.gz`](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/download/v0.1.0/janet-1.41.3-dev-tiger-g3.tar.gz) —
-  curl-installable 1.7 MB tarball.
-- Built on ibookg38 (Tiger G3, gcc-4.9.4), verified on ibookg37
-  (clean Tiger G3 — no compiler, no source).
-- 29 of 30 of Janet's own test suites pass; the one failure is
-  `suite-os.janet` panicking on the deliberately-stubbed
-  `os/execute`.
-- `os/spawn`, `os/execute`, `os/shell`, `os/posix-fork`,
-  `os/posix-exec` are absent under `JANET_NO_PROCESSES` (M1.a
-  scope; the `posix_spawn` fork+execve fallback is M1.b).
-- Mirrored at `http://leopard.sh/misc/beta/janet-1.41.3-dev-tiger-g3.tar.gz`
+- [`janet-1.41.3-dev-r2-tiger-g3.tar.gz`](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/download/v0.2.0/janet-1.41.3-dev-r2-tiger-g3.tar.gz)
+  — curl-installable 1.7 MB tarball, **with `os/spawn` /
+  `os/execute` / `os/shell` working** via a fork+execve fallback
+  (Tiger has no `<spawn.h>` / `posix_spawn`).
+- [`janet-1.41.3-dev-r2-tiger-g3-byo.tar.gz`](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/download/v0.2.0/janet-1.41.3-dev-r2-tiger-g3-byo.tar.gz)
+  — same binary but BYO macports-legacy-support (smaller, for
+  leopard.sh / source-builders with the dep already at
+  `/opt/macports-legacy-support-20221029/`).
+- `suite-os.janet` 57/58 on ibookg38 (the one fail is unrelated —
+  `os/realpath` Tiger semantics, see
+  [`docs/deferred.md`](docs/deferred.md)).
+- End-to-end gate: `jpm install
+  https://github.com/cellularmitosis/janet-lzo` succeeds on a
+  clean Tiger G3 box, builds the native module via gcc-4.9,
+  installs into `lib/janet/lzo.so`, and round-trips a 9 KB
+  payload through `(lzo/decompress (lzo/compress …))` — every
+  subprocess inside jpm rides on the fork+execve fallback.
+- Mirrored at `http://leopard.sh/misc/beta/janet-1.41.3-dev-r2-tiger-g3.tar.gz`
   for the curl-install one-liner.
+
+The earlier [v0.1.0 (M1.a)](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.1.0)
+release shipped the pure-Janet REPL + native-module loader without
+subprocess support; v0.2.0 is the recommended download.
 
 ## Try it out!
 
@@ -43,12 +54,16 @@ sudo chmod ugo+rwx /opt
 cd /opt
 # Prerequisites (installed by tigersh, see leopard.sh):
 #   gcc-libs-4.9.4, macports-legacy-support-20221029
-curl http://leopard.sh/misc/beta/janet-1.41.3-dev-tiger-g3.tar.gz | gunzip | tar x
+curl http://leopard.sh/misc/beta/janet-1.41.3-dev-r2-tiger-g3.tar.gz | gunzip | tar x
 /opt/janet-1.41.3-dev/bin/janet -e '(print "hello from janet on tiger ppc")'
 ```
 
-For a richer four-step smoke (PEG / fiber / `string/format` / optional
-LZO round-trip), see [`demos/v0.1.0-hello.{janet,sh}`](demos/).
+For the M1.b acceptance demo — full `jpm install` pipeline →
+gcc-4.9 → lzo round-trip — grab
+[`demos/v0.2.0-jpm-install-lzo.{janet,sh}`](demos/) from the repo and
+run `sh demos/v0.2.0-jpm-install-lzo.sh`.  Or for the lighter
+v0.1.0-style smoke (PEG / fiber / `string/format` / optional LZO
+round-trip): [`demos/v0.1.0-hello.{janet,sh}`](demos/).
 
 ## Why
 
@@ -82,7 +97,7 @@ Legend: ✅ Working / 🟡 Partial or pinned / ❌ Missing.
 
 | Arch | Host | Status | Notes |
 |---|---|---|---|
-| G3 (PPC 750) Tiger | ibookg38 (build) / ibookg37 (test) | 🟡 M1.a released, M1.b pending | M1.a tarball [released as v0.1.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.1.0) (session 005).  M1.b (posix_spawn fallback) is the remaining critical-path item. |
+| G3 (PPC 750) Tiger | ibookg38 (build) / ibookg37 (test) | ✅ M1 (G3) | M1.b [released as v0.2.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.0) (session 007).  Bundled + BYO macports-legacy-support tarballs both verified on a clean ibookg37.  G3-built tarballs run on G4/G5 too (PPC ISA is forward-compatible); G4 + AltiVec is M2, G5/64-bit is M3. |
 | G4 (PPC 7450) Tiger | TBD | ❌ M2 | Adds `-mcpu=7450 -maltivec`.  |
 | G5 (PPC 970) Tiger | pmacg5 | ❌ M3 | `tools/patch-header.janet` Bus error on G5 in 1.27.0; needs bootstrap-on-G3 workaround. |
 | G4 Leopard | TBD | ❌ Later | Leopard is more POSIX, so mechanically easier. |
@@ -94,8 +109,8 @@ Legend: ✅ Working / 🟡 Partial or pinned / ❌ Missing.
 |---|---|---|
 | Pure-Janet REPL (`janet -e`) | ✅ M1.a | Tarball builds clean against macports-legacy-support; runs on clean ibookg37 install (session 002). |
 | Native module loading (smoke = [janet-lzo](https://github.com/cellularmitosis/janet-lzo)) | ✅ M1.a | `lzo.c` built via [`scripts/build-janet-lzo-remote.sh`](scripts/build-janet-lzo-remote.sh) (jpm's canonical darwin recipe: `-fPIC -shared -undefined dynamic_lookup`).  Dropped into `lib/janet/lzo.so` and round-tripped via `(import lzo) (lzo/decompress (lzo/compress @"hello"))` on ibookg37 (clean Tiger G3) — session 003. |
-| `os/spawn` (subprocess) | ❌ M1.b | The `posix_spawn` fork+execve fallback — the bit the 1.27.0 leopard.sh sketch never got working.  M1.b gate. |
-| `jpm install` from git URL | ❌ M1.b | Depends on `os/spawn`; lights up once the above lands.  M1.b adds the `jpm install janet-lzo`-on-clean-Tiger end-to-end smoke. |
+| `os/spawn` (subprocess) | ✅ M1.b | `posix_spawn` fork+execve fallback (patches 0002 / 0003 / 0004, session 006).  `suite-os.janet` 57/58 on ibookg38 (the one fail is unrelated — `os/realpath`).  See [`docs/sessions/006-posix-spawn-fallback/`](docs/sessions/006-posix-spawn-fallback/). |
+| `jpm install` from git URL | ✅ M1.b | `jpm install https://github.com/cellularmitosis/janet-lzo.git` succeeds on clean ibookg37: git fetch + gcc-4.9 build + `cp` install + `(import lzo)` round-trip, every subprocess via the fork+execve fallback.  See [`docs/sessions/007-jpm-install-and-release/`](docs/sessions/007-jpm-install-and-release/). |
 | AltiVec via `-mcpu=7450 -maltivec` | ❌ M2 | Compiler flags only; no source patches. |
 | AltiVec source patches | ❌ Deferred | Only if M2 measurement justifies.  See [docs/deferred.md](docs/deferred.md). |
 
@@ -105,7 +120,7 @@ Legend: ✅ Working / 🟡 Partial or pinned / ❌ Missing.
 |---|---|---|
 | Standalone `/opt/janet-X.Y.Z/` tarball | ✅ M1.a | Tarball built in session 002, released as [v0.1.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.1.0) in session 005.  Curl-installable; ships macports-legacy-support's dylib under `lib/`. |
 | `@loader_path` install names | ✅ M1.a | `bin/janet` → `@loader_path/../lib/...`; bundled dylibs self-id'd to `@loader_path/...`.  Verified on ibookg37. |
-| BYO macports-legacy-support build mode | ❌ M1.b | For leopard.sh / developers with the lib already installed.  Lands alongside the `posix_spawn` fix. |
+| BYO macports-legacy-support build mode | ✅ M1.b | `BYO_MACPORTS_LEGACY=1 scripts/build-tiger.sh` skips bundling + `install_name_tool` rewrites; the binary keeps the absolute LC_LOAD_DYLIB reference to `$LEGACY_SUPPORT_PREFIX/lib/libMacportsLegacySupport.dylib`.  Released as `janet-1.41.3-dev-r2-tiger-g3-byo.tar.gz` alongside the bundled tarball (session 007). |
 
 ## Releases
 

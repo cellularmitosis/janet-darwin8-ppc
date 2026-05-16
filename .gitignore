@@ -4,3 +4,4 @@ build/
 *.tar.gz.md5
 .DS_Store
 releases/
+.claude/

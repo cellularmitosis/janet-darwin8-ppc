@@ -1,0 +1,81 @@
+=== install janet-1.41.3-dev-r2-tiger-g3.tar.gz into /opt ===
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  2 1694k    2 41747    0     0  69232      0  0:00:25 --:--:--  0:00:25 69347 18 1694k   18  305k    0     0   187k      0  0:00:09  0:00:01  0:00:08  187k 33 1694k   33  563k    0     0   216k      0  0:00:07  0:00:02  0:00:05  216k 67 1694k   67 1142k    0     0   315k      0  0:00:05  0:00:03  0:00:02  316k100 1694k  100 1694k    0     0   390k      0  0:00:04  0:00:04 --:--:--  390k
+janet 1.41.3-dev ready at /opt/janet-1.41.3-dev/bin/janet
+=== bootstrap jpm into /opt/janet-1.41.3-dev ===
+Cloning into '/tmp/jpm-bootstrap.28797'...
+generating /opt/janet-1.41.3-dev/lib/janet/.manifests/jpm.jdn...
+git remote get-url origin
+git rev-parse HEAD
+Installed as 'jpm'.
+copying jpm/cc.janet to /opt/janet-1.41.3-dev/lib/janet/jpm...
+cp -rf jpm/cc.janet /opt/janet-1.41.3-dev/lib/janet/jpm
+copying jpm/cli.janet to /opt/janet-1.41.3-dev/lib/janet/jpm...
+cp -rf jpm/cli.janet /opt/janet-1.41.3-dev/lib/janet/jpm
+copying jpm/commands.janet to /opt/janet-1.41.3-dev/lib/janet/jpm...
+cp -rf jpm/commands.janet /opt/janet-1.41.3-dev/lib/janet/jpm
+copying jpm/config.janet to /opt/janet-1.41.3-dev/lib/janet/jpm...
+cp -rf jpm/config.janet /opt/janet-1.41.3-dev/lib/janet/jpm
+copying jpm/dagbuild.janet to /opt/janet-1.41.3-dev/lib/janet/jpm...
+cp -rf jpm/dagbuild.janet /opt/janet-1.41.3-dev/lib/janet/jpm
+copying jpm/declare.janet to /opt/janet-1.41.3-dev/lib/janet/jpm...
+cp -rf jpm/declare.janet /opt/janet-1.41.3-dev/lib/janet/jpm
+copying jpm/init.janet to /opt/janet-1.41.3-dev/lib/janet/jpm...
+cp -rf jpm/init.janet /opt/janet-1.41.3-dev/lib/janet/jpm
+copying jpm/make-config.janet to /opt/janet-1.41.3-dev/lib/janet/jpm...
+cp -rf jpm/make-config.janet /opt/janet-1.41.3-dev/lib/janet/jpm
+copying jpm/pm.janet to /opt/janet-1.41.3-dev/lib/janet/jpm...
+cp -rf jpm/pm.janet /opt/janet-1.41.3-dev/lib/janet/jpm
+copying jpm/rules.janet to /opt/janet-1.41.3-dev/lib/janet/jpm...
+cp -rf jpm/rules.janet /opt/janet-1.41.3-dev/lib/janet/jpm
+copying jpm/shutil.janet to /opt/janet-1.41.3-dev/lib/janet/jpm...
+cp -rf jpm/shutil.janet /opt/janet-1.41.3-dev/lib/janet/jpm
+copying jpm/scaffold.janet to /opt/janet-1.41.3-dev/lib/janet/jpm...
+cp -rf jpm/scaffold.janet /opt/janet-1.41.3-dev/lib/janet/jpm
+copying jpm/cgen.janet to /opt/janet-1.41.3-dev/lib/janet/jpm...
+cp -rf jpm/cgen.janet /opt/janet-1.41.3-dev/lib/janet/jpm
+copying jpm.1 to /opt/janet-1.41.3-dev/share/man/man1...
+cp -rf jpm.1 /opt/janet-1.41.3-dev/share/man/man1
+installing jpm/jpm to /opt/janet-1.41.3-dev/bin/jpm
+chmod +x /opt/janet-1.41.3-dev/bin/jpm
+copying file configs/tiger_ppc_config.janet to /opt/janet-1.41.3-dev/lib/janet/jpm/default-config.janet...
+Running jpm to self install...
+usage: jpm [--key=value, --flag] ... [subcommand] [args] ...
+=== jpm install janet-lzo ===
+Initialized empty Git repository in /opt/janet-1.41.3-dev/lib/janet/.cache/git__https___github.com_cellularmitosis_janet-lzo.git/.git/
+git -c init.defaultBranch=master -C /opt/janet-1.41.3-dev/lib/janet/.cache/git__https___github.com_cellularmitosis_janet-lzo.git init
+git -C /opt/janet-1.41.3-dev/lib/janet/.cache/git__https___github.com_cellularmitosis_janet-lzo.git remote add origin https://github.com/cellularmitosis/janet-lzo.git
+From https://github.com/cellularmitosis/janet-lzo
+ * [new branch]      master     -> origin/master
+git -C /opt/janet-1.41.3-dev/lib/janet/.cache/git__https___github.com_cellularmitosis_janet-lzo.git fetch --tags origin
+From https://github.com/cellularmitosis/janet-lzo
+ * branch            HEAD       -> FETCH_HEAD
+git -C /opt/janet-1.41.3-dev/lib/janet/.cache/git__https___github.com_cellularmitosis_janet-lzo.git fetch origin HEAD
+HEAD is now at 03345db move lzo_init into JANET_MODULE_ENTRY
+git -C /opt/janet-1.41.3-dev/lib/janet/.cache/git__https___github.com_cellularmitosis_janet-lzo.git reset --hard FETCH_HEAD
+git -C /opt/janet-1.41.3-dev/lib/janet/.cache/git__https___github.com_cellularmitosis_janet-lzo.git submodule update --init --recursive
+gcc-4.9 -c lzo.c -DJANET_BUILD_TYPE=release -std=c99 -I/opt/macports-legacy-support-20221029/include/LegacySupport -Os -Wall -Wextra -I/opt/janet-1.41.3-dev/include/janet -I/opt/janet-1.41.3-dev/lib/janet -O2 -fPIC -o build/lzo.o
+generating meta file build/lzo.meta.janet...
+gcc-4.9 -std=c99 -I/opt/macports-legacy-support-20221029/include/LegacySupport -Os -Wall -Wextra -I/opt/janet-1.41.3-dev/include/janet -I/opt/janet-1.41.3-dev/lib/janet -O2 -o build/lzo.so build/lzo.o -L/opt/macports-legacy-support-20221029/lib -llzo2 -lMacportsLegacySupport -shared -undefined dynamic_lookup -lpthread
+gcc-4.9 -c lzo.c -DJANET_BUILD_TYPE=release -DJANET_ENTRY_NAME=janet_module_entry_lzo -std=c99 -I/opt/macports-legacy-support-20221029/include/LegacySupport -Os -Wall -Wextra -I/opt/janet-1.41.3-dev/include/janet -I/opt/janet-1.41.3-dev/lib/janet -O2 -o build/lzo.static.o
+ar rcs build/lzo.a build/lzo.static.o
+generating /opt/janet-1.41.3-dev/lib/janet/.manifests/lzo.jdn...
+git remote get-url origin
+git rev-parse HEAD
+Installed as 'lzo'.
+copying build/lzo.so to /opt/janet-1.41.3-dev/lib/janet/...
+cp -rf build/lzo.so /opt/janet-1.41.3-dev/lib/janet/
+copying build/lzo.meta.janet to /opt/janet-1.41.3-dev/lib/janet/...
+cp -rf build/lzo.meta.janet /opt/janet-1.41.3-dev/lib/janet/
+copying build/lzo.a to /opt/janet-1.41.3-dev/lib/janet/...
+cp -rf build/lzo.a /opt/janet-1.41.3-dev/lib/janet/
+=== run v0.2.0-jpm-install-lzo.janet ===
+
+=== janet-darwin8-ppc v0.2.0 jpm-install — Janet 1.41.3-dev on macos/ppc ===
+
+[1] os/spawn captured stdout="hello-from-os/spawn"  exit=0
+[2] lzo (via jpm install): 9000 -> 108 bytes (ratio 0.0120), round-trip ok=true
+
+ok.
+

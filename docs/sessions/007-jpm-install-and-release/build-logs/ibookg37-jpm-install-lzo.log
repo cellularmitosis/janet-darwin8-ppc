@@ -1,0 +1,37 @@
+=== uname & toolchain ===
+Darwin ibookg37.home 8.11.0 Darwin Kernel Version 8.11.0: Wed Oct 10 18:26:00 PDT 2007; root:xnu-792.24.17~1/RELEASE_PPC Power Macintosh powerpc
+gcc-4.9 (GCC) 4.9.4
+janet 1.41.3-dev
+
+=== jpm install janet-lzo ===
+Initialized empty Git repository in /opt/janet-1.41.3-dev/lib/janet/.cache/git__https___github.com_cellularmitosis_janet-lzo.git/.git/
+git -c init.defaultBranch=master -C /opt/janet-1.41.3-dev/lib/janet/.cache/git__https___github.com_cellularmitosis_janet-lzo.git init
+git -C /opt/janet-1.41.3-dev/lib/janet/.cache/git__https___github.com_cellularmitosis_janet-lzo.git remote add origin https://github.com/cellularmitosis/janet-lzo.git
+From https://github.com/cellularmitosis/janet-lzo
+ * [new branch]      master     -> origin/master
+git -C /opt/janet-1.41.3-dev/lib/janet/.cache/git__https___github.com_cellularmitosis_janet-lzo.git fetch --tags origin
+From https://github.com/cellularmitosis/janet-lzo
+ * branch            HEAD       -> FETCH_HEAD
+git -C /opt/janet-1.41.3-dev/lib/janet/.cache/git__https___github.com_cellularmitosis_janet-lzo.git fetch origin HEAD
+HEAD is now at 03345db move lzo_init into JANET_MODULE_ENTRY
+git -C /opt/janet-1.41.3-dev/lib/janet/.cache/git__https___github.com_cellularmitosis_janet-lzo.git reset --hard FETCH_HEAD
+git -C /opt/janet-1.41.3-dev/lib/janet/.cache/git__https___github.com_cellularmitosis_janet-lzo.git submodule update --init --recursive
+generating meta file build/lzo.meta.janet...
+gcc-4.9 -c lzo.c -DJANET_BUILD_TYPE=release -std=c99 -I/opt/macports-legacy-support-20221029/include/LegacySupport -Os -Wall -Wextra -I/opt/janet-1.41.3-dev/include/janet -I/opt/janet-1.41.3-dev/lib/janet -O2 -fPIC -o build/lzo.o
+gcc-4.9 -std=c99 -I/opt/macports-legacy-support-20221029/include/LegacySupport -Os -Wall -Wextra -I/opt/janet-1.41.3-dev/include/janet -I/opt/janet-1.41.3-dev/lib/janet -O2 -o build/lzo.so build/lzo.o -L/opt/macports-legacy-support-20221029/lib -llzo2 -lMacportsLegacySupport -shared -undefined dynamic_lookup -lpthread
+gcc-4.9 -c lzo.c -DJANET_BUILD_TYPE=release -DJANET_ENTRY_NAME=janet_module_entry_lzo -std=c99 -I/opt/macports-legacy-support-20221029/include/LegacySupport -Os -Wall -Wextra -I/opt/janet-1.41.3-dev/include/janet -I/opt/janet-1.41.3-dev/lib/janet -O2 -o build/lzo.static.o
+ar rcs build/lzo.a build/lzo.static.o
+generating /opt/janet-1.41.3-dev/lib/janet/.manifests/lzo.jdn...
+git remote get-url origin
+git rev-parse HEAD
+Installed as 'lzo'.
+copying build/lzo.so to /opt/janet-1.41.3-dev/lib/janet/...
+cp -rf build/lzo.so /opt/janet-1.41.3-dev/lib/janet/
+copying build/lzo.meta.janet to /opt/janet-1.41.3-dev/lib/janet/...
+cp -rf build/lzo.meta.janet /opt/janet-1.41.3-dev/lib/janet/
+copying build/lzo.a to /opt/janet-1.41.3-dev/lib/janet/...
+cp -rf build/lzo.a /opt/janet-1.41.3-dev/lib/janet/
+
+=== verify round-trip ===
+raw=57 comp=61 back=57 match=true
+text=hello jpm install on tiger ppc with the os/spawn fallback

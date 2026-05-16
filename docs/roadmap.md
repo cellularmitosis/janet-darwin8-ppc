@@ -94,28 +94,38 @@ Each item is roughly one session.
      the posix_spawn-default path is unregressed.
    - Upstream PR is queued; see [`deferred.md`](deferred.md).
 
-8. **BYO macports-legacy-support build mode.**
-   - `scripts/build-tiger.sh` learns `BYO_MACPORTS_LEGACY=1`.
-   - For developers and leopard.sh integration with macports-legacy-
-     support already installed at `/opt/macports-legacy-support-*/`.
-   - Skips the bundling + install_name_tool dylib steps; just
-     references the existing install.
+8. **✅ BYO macports-legacy-support build mode.** *(session 007)*
+   - `scripts/build-tiger.sh` learns `BYO_MACPORTS_LEGACY=1`
+     (skip bundling + `install_name_tool` rewrite) and
+     `RELEASE_REV=<rev>` (project-level revision marker for the
+     tarball basename so we can cut releases at the same upstream
+     SHA without filename collision).
+   - BYO tarball verified on ibookg37 (lib loaded via absolute
+     `/opt/macports-legacy-support-20221029/lib/libMacportsLegacySupport.dylib`
+     install_name; no bundled copy in the tarball).
 
-9. **jpm install from git URL works.**
-   - `jpm install https://github.com/cellularmitosis/janet-lzo` on
-     ibookg37 against a clean `/opt/janet-X.Y.Z/` install.
-   - Build chain inside jpm runs (gcc, make, …).
+9. **✅ jpm install from git URL works.** *(session 007)*
+   - `jpm install https://github.com/cellularmitosis/janet-lzo.git`
+     on ibookg37 against a clean `/opt/janet-1.41.3-dev/` install.
+   - Build chain (git fetch, gcc-4.9 compile + link, ar, cp) all
+     rides on the `posix_spawn` fork+execve fallback.
+   - `(import lzo) (lzo/decompress (lzo/compress …))` round-trips
+     a 9 KB payload through the jpm-installed `lib/janet/lzo.so`.
    - Pass = posix_spawn fallback is solid AND `@loader_path`
      resolution from inside the freshly-built `.so` works.
 
-10. **Final M1 release.**
-    - Tarball with the `posix_spawn` fallback baked in.
-    - BYO mode documented in `BUILDING.md` or similar.
-    - Demo: `demos/vX.Y.Z-lzo-jpm-install.sh` — full
-      curl→install→`jpm install`→lzo round-trip on a vanilla Tiger
-      box.
-    - Upstream PR for the `posix_spawn` patch as a separate track
-      (its own timeline; we don't gate releases on upstream review).
+10. **✅ Final M1 release.** *(session 007 — [v0.2.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.0))*
+    - Bundled tarball `janet-1.41.3-dev-r2-tiger-g3.tar.gz` and BYO
+      tarball `janet-1.41.3-dev-r2-tiger-g3-byo.tar.gz` — both 1.7 MB,
+      both attached to the GitHub release and mirrored at
+      `http://leopard.sh/misc/beta/`.
+    - Demo: [`demos/v0.2.0-jpm-install-lzo.{janet,sh}`](../demos/) —
+      one-command pipeline (tigersh prereqs → curl tarball →
+      bootstrap jpm with a Tiger-specific config → `jpm install
+      janet-lzo` → `os/spawn` + lzo round-trip).  End-to-end
+      verified on a wiped-clean ibookg37.
+    - Upstream PR for the `posix_spawn` patches queued in
+      [`deferred.md`](deferred.md) (independent timeline).
 
 ## M2 — G4 + AltiVec exploration
 

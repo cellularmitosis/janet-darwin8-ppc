@@ -29,10 +29,29 @@ runs cleanly whether or not janet-lzo's `lzo.so` is dropped under
 round-trips a 9 KB payload through `lzo/compress` and `lzo/decompress`;
 without, step [4] prints a polite skip.
 
-## Future demos
+## v0.2.0 — `posix_spawn` fallback + `jpm install`
 
-Planned for v0.1.1 (M1.b — `posix_spawn` fallback lands):
+- [`v0.2.0-jpm-install-lzo.janet`](v0.2.0-jpm-install-lzo.janet) —
+  two-step (os/spawn round-trip via `/bin/echo`, then lzo round-trip
+  through the jpm-installed native module).
+- [`v0.2.0-jpm-install-lzo.sh`](v0.2.0-jpm-install-lzo.sh) — full
+  pipeline wrapper.  On a vanilla Tiger box with tigersh:
+    1. tigersh-installs the prerequisites (gcc-libs-4.9.4,
+       macports-legacy-support-20221029, gcc-4.9.4, make-4.3,
+       ld64-97.17-tigerbrew, git-2.35.1, lzo-2.10).
+    2. curls + unpacks `janet-1.41.3-dev-r2-tiger-g3.tar.gz` to
+       `/opt/janet-1.41.3-dev/`.
+    3. Bootstraps jpm into the janet tree with a Tiger-specific
+       config baked into the script.
+    4. `jpm install https://github.com/cellularmitosis/janet-lzo`.
+    5. Runs the `.janet` script.
 
-- `vX.Y.Z-lzo-jpm-install.sh` — curl + tarball-install + `jpm install
-  https://github.com/cellularmitosis/janet-lzo` end-to-end on a vanilla
-  Tiger box.  The acceptance-gate demo for M1.b.
+  Acceptance gate for M1.b: every subprocess call (git, gcc-4.9, ar,
+  cp, …) inside jpm rides on the `posix_spawn` fork+execve fallback
+  that landed in session 006.
+
+  Run on a Tiger PPC box (one-command, idempotent):
+
+  ```
+  sh demos/v0.2.0-jpm-install-lzo.sh
+  ```

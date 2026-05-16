@@ -9,4 +9,4 @@ Captured as
 
 ## In outer repo
 
-(Filled in at session-commit time.)
+- `ca49e68` — `session 001: pin SHA, scaffold fetch/regen, first build, features.h patch`

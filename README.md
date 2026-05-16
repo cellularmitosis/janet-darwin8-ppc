@@ -16,6 +16,25 @@ of portability patches (intended for upstream), and produces
 standalone `/opt/janet-X.Y.Z/` tarballs that run on real Tiger PPC
 hardware.
 
+## Try it out!
+
+On any G3, G4, or G5 Mac running Tiger:
+
+```
+sudo mkdir -p /opt
+sudo chmod ugo+rwx /opt
+cd /opt
+curl http://leopard.sh/misc/beta/janet-1.41.3-dev-r3-tiger-g3.tar.gz | gunzip | tar x
+/opt/janet-1.41.3-dev/bin/janet -e '(print "hello from janet on tiger ppc")'
+```
+
+For the M1.b acceptance demo — full `jpm install` pipeline →
+gcc-4.9 → lzo round-trip — grab
+[`demos/v0.2.0-jpm-install-lzo.{janet,sh}`](demos/) from the repo and
+run `sh demos/v0.2.0-jpm-install-lzo.sh`.  Or for the lighter
+v0.1.0-style smoke (PEG / fiber / `string/format` / optional LZO
+round-trip): [`demos/v0.1.0-hello.{janet,sh}`](demos/).
+
 ## Status
 
 **M1.b released** ([v0.2.1](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.1)):
@@ -52,29 +71,6 @@ on the target).  The earlier
 [v0.1.0 (M1.a)](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.1.0)
 release shipped the pure-Janet REPL + native-module loader without
 subprocess support; v0.2.1 is the recommended download.
-
-## Try it out!
-
-On any G3, G4, or G5 Mac running Tiger:
-
-```
-sudo mkdir -p /opt
-sudo chmod ugo+rwx /opt
-cd /opt
-# No system prereqs.  macports-legacy-support is bundled inside
-# this tarball via @loader_path; gcc-4.9.4's libgcc is statically
-# linked.  (The -byo.tar.gz variant skips the mlsupport bundling
-# and so needs macports-legacy-support installed at /opt.)
-curl http://leopard.sh/misc/beta/janet-1.41.3-dev-r3-tiger-g3.tar.gz | gunzip | tar x
-/opt/janet-1.41.3-dev/bin/janet -e '(print "hello from janet on tiger ppc")'
-```
-
-For the M1.b acceptance demo — full `jpm install` pipeline →
-gcc-4.9 → lzo round-trip — grab
-[`demos/v0.2.0-jpm-install-lzo.{janet,sh}`](demos/) from the repo and
-run `sh demos/v0.2.0-jpm-install-lzo.sh`.  Or for the lighter
-v0.1.0-style smoke (PEG / fiber / `string/format` / optional LZO
-round-trip): [`demos/v0.1.0-hello.{janet,sh}`](demos/).
 
 ## Why
 

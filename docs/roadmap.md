@@ -82,15 +82,17 @@ Each item is roughly one session.
 
 ### M1.b — `posix_spawn` fallback + jpm install (final M1 release)
 
-7. **`posix_spawn` fallback — debug the leopard.sh 1.27.0 sketch
-   to working.**
-   - Start from the inline patch in
-     `install-janet-1.27.0.sh` on leopard.sh.
-   - Trace through `fork` + `execve` + the pipe/file-descriptor
-     plumbing that Janet's `os/spawn` exposes.
-   - Use the previously-skipped `os/spawn` tests in Janet's own
-     suite as the validation surface.
-   - Land as `patches/000N-posix-spawn-fallback.patch`.
+7. **✅ `posix_spawn` fallback.** *(session 006)*
+   - Patches 0002 / 0003 / 0004 — `JANET_NO_POSIX_SPAWN` gate +
+     fork + (dup2 / chdir) + execve fallback with a CLOEXEC pipe
+     for exec-failure propagation + auto-detection on pre-Leopard
+     Apple.  Old `JANET_NO_PROCESSES` stub patches dropped.
+   - Validation: `suite-os.janet` 57/58 on ibookg38 (the 1
+     failure is `os/realpath` semantics, not spawn — see
+     [`deferred.md`](deferred.md)).  Uranium's full `make test`
+     battery still passes with `JANET_NO_POSIX_SPAWN` forced, so
+     the posix_spawn-default path is unregressed.
+   - Upstream PR is queued; see [`deferred.md`](deferred.md).
 
 8. **BYO macports-legacy-support build mode.**
    - `scripts/build-tiger.sh` learns `BYO_MACPORTS_LEGACY=1`.

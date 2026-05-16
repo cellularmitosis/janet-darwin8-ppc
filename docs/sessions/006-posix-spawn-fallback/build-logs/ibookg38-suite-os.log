@@ -1,0 +1,3 @@
+Starting suite test/suite-os.janet...
+[31m✘[0m test/suite-os.janet:195: "os/realpath errors when path does not exist": false
+Finished suite test/suite-os.janet in 0.739 seconds - 57 of 58 tests passed (0 skipped).

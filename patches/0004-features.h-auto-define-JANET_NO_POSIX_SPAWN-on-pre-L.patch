@@ -1,0 +1,37 @@
+From 1d58abcee891cfae77307b7d1cd64dc73d9e7d5e Mon Sep 17 00:00:00 2001
+From: Jason Pepas <jasonpepas@gmail.com>
+Date: Sat, 16 May 2026 00:48:57 -0500
+Subject: [PATCH 4/5] features.h: auto-define JANET_NO_POSIX_SPAWN on
+ pre-Leopard Apple
+
+Pairs with the previous two commits.  Tiger and earlier lack
+<spawn.h>, and macports-legacy-support does not backfill
+posix_spawn{,p}.  Auto-enable the fork+execve fallback there so
+the source tree builds out-of-the-box on pre-Leopard macOS with
+no extra -D flags required.
+
+Users on platforms where posix_spawn exists but is undesirable
+can still pass -DJANET_NO_POSIX_SPAWN themselves to opt in to the
+fallback.
+---
+ src/core/features.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/src/core/features.h b/src/core/features.h
+index 92602130..1e750b24 100644
+--- a/src/core/features.h
++++ b/src/core/features.h
+@@ -60,6 +60,13 @@
+ #define _GNU_SOURCE
+ #endif
+ 
++/* Mac OS X 10.4 Tiger lacks <spawn.h> / posix_spawn{,p}; the
++ * macports-legacy-support shim does not backfill it either.  Select
++ * the fork+execve fallback for os/spawn, os/execute, os/shell. */
++#if defined(JANET_APPLE_PRE_LEOPARD) && !defined(JANET_NO_POSIX_SPAWN)
++# define JANET_NO_POSIX_SPAWN
++#endif
++
+ #if defined(WIN32) || defined(_WIN32)
+ #define WIN32_LEAN_AND_MEAN
+ #endif

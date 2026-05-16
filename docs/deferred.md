@@ -20,12 +20,13 @@ entry here.
 These are out-of-band tracks that don't block our own releases.  We
 send them when the patch is solid; upstream reviews at their pace.
 
-- **`posix_spawn` fallback PR.**  Once our patch is debugged-to-
-  working in M1.b, send it upstream.  The leopard.sh 1.27.0 sketch
-  is the starting point.  Reasonable framing: "pre-10.5 macOS lacks
-  `<spawn.h>`; here's a fork+execve fallback gated on feature
-  detection."  Similar in shape to the user's already-merged PRs
-  #432 (O_CLOEXEC) and #436 (arc4random_buf).
+- **`posix_spawn` fallback PR.**  The patch landed in session 006
+  (patches 0002 / 0003 / 0004 — `JANET_NO_POSIX_SPAWN` gate + fork
+  + (dup2 / chdir) + execve fallback + auto-detection on pre-
+  Leopard Apple).  `suite-os.janet` 57/58 on ibookg38; the 1 fail
+  is unrelated (`os/realpath` semantics).  Ready to send upstream;
+  queue alongside the M1.b release.  Similar in shape to the
+  already-merged PRs #432 (O_CLOEXEC) and #436 (arc4random_buf).
 - **Simplify PR #937's clock-shim gate.**  The merged PR gates the
   Mach `clock_get_time` shim on `!MAC_OS_X_VERSION_10_12`.  Now that
   macports-legacy-support provides `clock_gettime` on Tiger, the
@@ -68,13 +69,30 @@ send them when the patch is solid; upstream reviews at their pace.
   [`tcc-darwin8-ppc/scripts/run-tests2.sh`](../../tcc-darwin8-ppc/scripts/run-tests2.sh)).
   Useful once we have more than a handful of smoke tests.
 
-## Open questions
+## Tiger-specific test failures (not blocking)
 
-- **Does Janet's `os/spawn` need anything beyond the leopard.sh
-  fork+execve sketch?**  Janet exposes a `spawn` API surface that
-  includes file actions (pipes, redirects) and environment passing.
-  The 1.27.0 sketch handled the simple case but never validated
-  pipes.  Will surface in M1.b.
+Surfaced by session 006's run of Janet's own test suite on
+ibookg38.  Unrelated to the spawn work; flagged in case they bite
+a downstream user.
+
+- **`os/realpath` does not error on nonexistent paths.**
+  `test/suite-os.janet:195` —
+  `(assert-error "..." (os/realpath "abc123def456"))` fails on
+  Tiger because macports-legacy-support's `realpath` shim
+  synthesizes a path instead of returning NULL/ENOENT.  Standard
+  Darwin realpath errors; Tiger's pre-10.5 implementation (or the
+  shim's emulation of it) doesn't.  Workaround: avoid relying on
+  this error case in Tiger-targeted Janet code.
+
+- **`suite-filewatch.janet` reports 17/23 on Tiger.**  `EVFILT_VNODE`
+  flag mapping looks wrong — `:attrib` events show up where
+  `:write` events are expected, plus spurious extra events.
+  Probably needs a Tiger-specific tweak in `src/core/filewatch.c`
+  or a "skip on Tiger" gate in the test.  Janet's filewatch is
+  built on `kqueue`/`kevent`; Tiger's kqueue is older than the one
+  upstream targets.
+
+## Open questions
 - **What's the right answer for `@loader_path` from inside a Janet
   native module?**  Four candidate strategies in [`plan.md`](plan.md#caveat-loader_path-resolution-from-inside-a-native-module);
   pick whichever works on real hardware.

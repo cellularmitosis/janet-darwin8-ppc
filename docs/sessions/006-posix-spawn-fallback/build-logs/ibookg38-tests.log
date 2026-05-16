@@ -1,0 +1,50 @@
+Starting suite test/suite-array.janet...
+Finished suite test/suite-array.janet in 0.035 seconds - 49 of 49 tests passed (0 skipped).
+Starting suite test/suite-asm.janet...
+Finished suite test/suite-asm.janet in 0.023 seconds - 6 of 6 tests passed (0 skipped).
+Starting suite test/suite-boot.janet...
+Finished suite test/suite-boot.janet in 0.370 seconds - 1551 of 1551 tests passed (0 skipped).
+Starting suite test/suite-buffer.janet...
+Finished suite test/suite-buffer.janet in 0.027 seconds - 77 of 77 tests passed (0 skipped).
+Starting suite test/suite-bundle.janet...
+Finished suite test/suite-bundle.janet in 0.407 seconds - 46 of 46 tests passed (0 skipped).
+Starting suite test/suite-capi.janet...
+Finished suite test/suite-capi.janet in 0.003 seconds - 9 of 9 tests passed (0 skipped).
+Starting suite test/suite-cfuns.janet...
+Finished suite test/suite-cfuns.janet in 0.001 seconds - 2 of 2 tests passed (0 skipped).
+Starting suite test/suite-compile.janet...
+Finished suite test/suite-compile.janet in 0.018 seconds - 39 of 39 tests passed (0 skipped).
+Starting suite test/suite-corelib.janet...
+Finished suite test/suite-corelib.janet in 0.039 seconds - 104 of 104 tests passed (0 skipped).
+Starting suite test/suite-debug.janet...
+Finished suite test/suite-debug.janet in 0.001 seconds - 1 of 1 tests passed (0 skipped).
+Starting suite test/suite-ev.janet...
+error: unexpected end of source, ( opened at line 1, column 1
+  in parse-all [boot.janet] on line 2823, column 7
+  in eval-string [boot.janet] on line 2831, column 11
+  in e-switch [boot.janet] (tail call) on line 4834, column 12
+  inFinished suite test/suite-ev.janet in 13.971 seconds - 735 of 735 tests passed (0 skipped).
+Starting suite test/suite-ev2.janet...
+Finished suite test/suite-ev2.janet in 0.717 seconds - 8 of 8 tests passed (0 skipped).
+Starting suite test/suite-ffi.janet...
+Finished suite test/suite-ffi.janet in 0.005 seconds - 10 of 10 tests passed (0 skipped).
+Starting suite test/suite-filewatch.janet...
+[31m✘[0m test/suite-filewatch.janet:52: "got :attrib, expected :write": false
+[31m✘[0m test/suite-filewatch.janet:214: "channel check empty": false
+[31m✘[0m test/suite-filewatch.janet:214: "channel check empty": false
+extra: {:cookie 6700417
+ :dir-name "tmp_dir_487181187691715.tmp"
+ :file-name ""
+ :type :write
+ :wd 10
+ :wd-path "tmp_dir_487181187691715.tmp"}
+[31m✘[0m test/suite-filewatch.janet:52: "got :attrib, expected :write": false
+[31m✘[0m test/suite-filewatch.janet:223: "channel check empty": false
+[31m✘[0m test/suite-filewatch.janet:223: "channel check empty": false
+Finished suite test/suite-filewatch.janet in 0.058 seconds - 17 of 23 tests passed (0 skipped).
+extra: {:cookie 13400834
+ :dir-name "tmp_dir_912752790009917.tmp"
+ :file-name ""
+ :type :write
+ :wd 11
+ :wd-path "tmp_dir_912752790009917.tmp"}

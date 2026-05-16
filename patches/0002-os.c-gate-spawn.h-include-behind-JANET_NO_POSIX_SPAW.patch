@@ -1,0 +1,30 @@
+From abcef1d2de0884b8ec830097878ccf37d8628916 Mon Sep 17 00:00:00 2001
+From: Jason Pepas <jasonpepas@gmail.com>
+Date: Sat, 16 May 2026 00:46:19 -0500
+Subject: [PATCH 2/5] os.c: gate <spawn.h> include behind JANET_NO_POSIX_SPAWN
+
+Tiger / pre-Leopard macOS lacks <spawn.h> and macports-legacy-support
+does not backfill posix_spawn{,p}.  Introduce a positive feature
+flag JANET_NO_POSIX_SPAWN that, when defined, both skips the
+<spawn.h> include and selects an alternate fork+execve code path
+inside os_execute_impl (next commit).
+
+This is the include-side half of the change; the implementation-
+side fallback follows.
+---
+ src/core/os.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/core/os.c b/src/core/os.c
+index bc7b7bd6..7aed38d8 100644
+--- a/src/core/os.c
++++ b/src/core/os.c
+@@ -58,7 +58,7 @@
+ #include <process.h>
+ #define JANET_SPAWN_CHDIR
+ #else
+-#ifndef JANET_PLAN9
++#if !defined(JANET_PLAN9) && !defined(JANET_NO_POSIX_SPAWN)
+ #include <spawn.h>
+ #endif
+ #include <utime.h>

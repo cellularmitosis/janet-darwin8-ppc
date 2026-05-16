@@ -1,0 +1,65 @@
+/opt/gcc-4.9.4/bin/gcc-4.9
+gcc-4.9 (GCC) 4.9.4
+GNU Make 4.3
+---START BUILD---
+src/core/net.c: In function 'cfun_net_setsockopt':
+src/core/net.c:1175:24: error: field 'v_mreq' has incomplete type
+         struct ip_mreq v_mreq;
+                        ^
+src/core/net.c:1177:26: error: field 'v_mreq6' has incomplete type
+         struct ipv6_mreq v_mreq6;
+                          ^
+src/core/net.c:1201:28: warning: comparison between pointer and integer
+     } else if (st->optname == IP_ADD_MEMBERSHIP || st->optname == IP_DROP_MEMBERSHIP) {
+                            ^
+src/core/net.c:1201:64: warning: comparison between pointer and integer
+     } else if (st->optname == IP_ADD_MEMBERSHIP || st->optname == IP_DROP_MEMBERSHIP) {
+                                                                ^
+src/core/net.c:1203:32: warning: passing argument 3 of 'memset' makes integer from pointer without a cast
+         memset(&val.v_mreq, 0, sizeof val.v_mreq);
+                                ^
+In file included from src/include/janet.h:406:0,
+                 from src/core/net.c:25:
+/usr/include/string.h:85:7: note: expected 'size_t' but argument is of type 'const struct sockopt_type *'
+ void *memset(void *, int, size_t);
+       ^
+src/core/net.c:1204:19: error: request for member 'imr_interface' in something not a structure or union
+         val.v_mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+                   ^
+src/core/net.c:1204:33: error: request for member 's_addr' in something not a structure or union
+         val.v_mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+                                 ^
+src/core/net.c:1204:9: warning: statement with no effect [-Wunused-value]
+         val.v_mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+         ^
+src/core/net.c:1205:45: error: request for member 'imr_multiaddr' in something not a structure or union
+         inet_pton(AF_INET, addr, &val.v_mreq.imr_multiaddr.s_addr);
+                                             ^
+src/core/net.c:1205:59: error: request for member 's_addr' in something not a structure or union
+         inet_pton(AF_INET, addr, &val.v_mreq.imr_multiaddr.s_addr);
+                                                           ^
+src/core/net.c:1206:16: warning: assignment makes integer from pointer without a cast
+         optlen = sizeof(val.v_mreq);
+                ^
+src/core/net.c:1210:33: warning: passing argument 3 of 'memset' makes integer from pointer without a cast
+         memset(&val.v_mreq6, 0, sizeof val.v_mreq6);
+                                 ^
+In file included from src/include/janet.h:406:0,
+                 from src/core/net.c:25:
+/usr/include/string.h:85:7: note: expected 'size_t' but argument is of type 'const struct sockopt_type *'
+ void *memset(void *, int, size_t);
+       ^
+src/core/net.c:1211:20: error: request for member 'ipv6mr_interface' in something not a structure or union
+         val.v_mreq6.ipv6mr_interface = 0;
+                    ^
+src/core/net.c:1211:9: warning: statement with no effect [-Wunused-value]
+         val.v_mreq6.ipv6mr_interface = 0;
+         ^
+src/core/net.c:1212:47: error: request for member 'ipv6mr_multiaddr' in something not a structure or union
+         inet_pton(AF_INET6, addr, &val.v_mreq6.ipv6mr_multiaddr);
+                                               ^
+src/core/net.c:1213:16: warning: assignment makes integer from pointer without a cast
+         optlen = sizeof(val.v_mreq6);
+                ^
+make: *** [Makefile:200: build/core/net.boot.o] Error 1
+---EXIT 0---

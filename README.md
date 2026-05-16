@@ -1,5 +1,7 @@
 # janet-darwin8-ppc
 
+<center><img src="docs/media/janet-tiger.jpg"></center>
+
 [Janet](https://github.com/janet-lang/janet) — the small Lisp-like
 programming language — resurrected for **Mac OS X 10.4 Tiger /
 PowerPC**.

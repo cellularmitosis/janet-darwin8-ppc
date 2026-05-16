@@ -1,0 +1,79 @@
+From 6425a0b4487a2bac36cc501fbb761659f195a9e0 Mon Sep 17 00:00:00 2001
+From: janet-darwin8-ppc <janet-darwin8-ppc@local>
+Date: Fri, 15 May 2026 22:32:33 -0500
+Subject: [PATCH] features.h: skip _POSIX_C_SOURCE / _XOPEN_SOURCE on
+ pre-Leopard macOS
+
+On Mac OS X 10.4 Tiger (and earlier), defining _POSIX_C_SOURCE or
+_XOPEN_SOURCE in <sys/cdefs.h> restricts header visibility and
+hides BSD socket extensions like struct ip_mreq (used by net.c's
+multicast setsockopt code).  Tiger's headers default to a BSD-
+friendly view when neither macro is set, so leave them undefined
+there.
+
+Detected via AvailabilityMacros.h: !defined(MAC_OS_X_VERSION_10_5)
+identifies Tiger and earlier.
+
+Without this change, building Janet on Tiger fails with:
+  src/core/net.c:1175: error: field v_mreq has incomplete type
+because <netinet/in.h> gates struct ip_mreq behind
+#ifndef _POSIX_C_SOURCE.
+---
+ src/core/features.h | 33 +++++++++++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 8 deletions(-)
+
+diff --git a/src/core/features.h b/src/core/features.h
+index 61032004..92602130 100644
+--- a/src/core/features.h
++++ b/src/core/features.h
+@@ -25,11 +25,25 @@
+ #ifndef JANET_FEATURES_H_defined
+ #define JANET_FEATURES_H_defined
+ 
++/* Detect Mac OS X 10.4 Tiger and earlier.  Defining _POSIX_C_SOURCE or
++ * _XOPEN_SOURCE on those releases restricts header visibility and hides
++ * BSD socket extensions (struct ip_mreq, ipv6_mreq, etc.) that Janet's
++ * net.c needs.  Tiger's headers default to a BSD-friendly view when
++ * neither macro is set, so we leave them undefined there. */
++#if defined(__APPLE__)
++# include <AvailabilityMacros.h>
++# if !defined(MAC_OS_X_VERSION_10_5)
++#  define JANET_APPLE_PRE_LEOPARD
++# endif
++#endif
++
+ #if defined(__NetBSD__) || defined(__APPLE__) || defined(__OpenBSD__) \
+     || defined(__bsdi__) || defined(__DragonFly__) || defined(__FreeBSD__)
+ /* Use BSD source on any BSD systems, include OSX */
+ # define _BSD_SOURCE
+-# define _POSIX_C_SOURCE 200809L
++# ifndef JANET_APPLE_PRE_LEOPARD
++#  define _POSIX_C_SOURCE 200809L
++# endif
+ #else
+ /* Use POSIX feature flags */
+ # ifndef _POSIX_C_SOURCE
+@@ -55,13 +69,16 @@
+ #define _WIN32_WINNT _WIN32_WINNT_VISTA
+ #endif
+ 
+-/* Needed for realpath on linux, as well as pthread rwlocks. */
+-#ifndef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE 600
+-#endif
+-#if _XOPEN_SOURCE < 600
+-#undef _XOPEN_SOURCE
+-#define _XOPEN_SOURCE 600
++/* Needed for realpath on linux, as well as pthread rwlocks.
++ * Skipped on Tiger and earlier, where it hides BSD socket types. */
++#ifndef JANET_APPLE_PRE_LEOPARD
++# ifndef _XOPEN_SOURCE
++# define _XOPEN_SOURCE 600
++# endif
++# if _XOPEN_SOURCE < 600
++# undef _XOPEN_SOURCE
++# define _XOPEN_SOURCE 600
++# endif
+ #endif
+ 
+ /* Needed for timegm and other extensions when building with -std=c99.

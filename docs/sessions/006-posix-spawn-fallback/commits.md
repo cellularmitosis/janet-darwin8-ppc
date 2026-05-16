@@ -2,7 +2,7 @@
 
 Outer repo (`janet-darwin8-ppc`):
 
-- *(TBD on commit)* — `session 006: posix_spawn fork+execve fallback`
+- `d2dc3d8` — `session 006: posix_spawn fork+execve fallback`
   - `patches/` reshuffled: old 0002 / 0003 (`JANET_NO_PROCESSES`
     stub) dropped, new 0002 / 0003 / 0004 ship the fallback +
     Tiger auto-detection.  Old 0004 (Makefile CPPFLAGS) renumbers

@@ -1,0 +1,18 @@
+=== smoke (mdd has no /opt/macports-legacy-support-20221029 — bundled tarball must resolve via @loader_path) ===
+hello from g4 (tarball) on macos ppc  host=mdd
+=== bench ===
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    1.918 s
+   (= 832040)
+  mandelbrot             0.830 s
+   (= 786476)
+  peg-match              0.405 s
+   (= 0)
+  marshal                0.548 s
+   (= 23040)
+
+  total:                 3.700 s

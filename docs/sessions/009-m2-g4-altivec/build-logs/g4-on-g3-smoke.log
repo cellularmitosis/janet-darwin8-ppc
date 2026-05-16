@@ -1,0 +1,7 @@
+=== host ===
+Darwin 8.11.0 Power Macintosh
+PowerBook4,3
+=== file ===
+/Users/macuser/tmp/g4-on-g3-smoke/janet-1.41.3-dev/bin/janet: Mach-O executable ppc
+=== smoke (G4 -mcpu=7450 binary on G3 — runs? dyld-rejects?) ===
+dyld: incompatible cpu-subtype

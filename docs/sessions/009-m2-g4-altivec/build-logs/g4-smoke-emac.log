@@ -1,0 +1,30 @@
+=== host ===
+Darwin 8.11.0 Power Macintosh
+10.4.11
+PowerMac6,4
+=== file ===
+/Users/macuser/tmp/g4-smoke/janet-1.41.3-dev/bin/janet: Mach-O executable ppc
+=== otool -L ===
+/Users/macuser/tmp/g4-smoke/janet-1.41.3-dev/bin/janet:
+	@loader_path/../lib/libMacportsLegacySupport.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 88.1.12)
+=== smoke ===
+hello from g4 1.41.3-dev on macos ppc
+=== bench ===
+/Users/macuser/tmp/bench.janet:14:1: compile warning (normal): binding label is shadowing a macro
+Janet 1.41.3-dev local on macos/ppc
+  CFLAGS used at build (gcc -v / ctab2 if interesting)
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    1.704 s
+   (= 832040)
+  mandelbrot             0.736 s
+   (= 786476)
+  peg-match              0.358 s
+   (= 0)
+  marshal                0.491 s
+   (= 23040)
+
+  total:                 3.290 s

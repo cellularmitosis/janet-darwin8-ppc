@@ -109,9 +109,10 @@ Legend: ✅ Working / 🟡 Partial or pinned / ❌ Missing.
 | Arch | Host | Status | Notes |
 |---|---|---|---|
 | G3 (PPC 750) Tiger | ibookg38 (build) / ibookg37 (test) | ✅ M1 (G3) | M1.b [released as v0.2.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.0) (session 007).  Bundled + BYO macports-legacy-support tarballs both verified on a clean ibookg37.  G3-built tarballs run on G4/G5 too (PPC ISA is forward-compatible); G4 + AltiVec is M2, G5/64-bit is M3. |
-| G4 (PPC 7450) Tiger | TBD | ❌ M2 | Adds `-mcpu=7450 -maltivec`.  |
+| G4 (PPC 7450) Tiger | emac (build) / pbookg42, mdd (test) | 🟡 M2 explored | `TIGER_ARCH=g4 scripts/build-tiger.sh` produces `-tiger-g4.tar.gz`.  Verified standalone on `mdd` (Leopard G4 MDD with no mlsupport at `/opt/macports-legacy-support-20221029` — `@loader_path` bundling carries the dylib).  Net gain over G3 tarball running on the same G4 hardware: **−0.2% on a mixed Janet benchmark** (mandelbrot −2.6%, fib +0.6%, peg +2.0%, marshal flat) — within noise.  Not shipped as a release variant; v0.2.1 G3 tarball remains the recommended download for G4 too.  See [session 009](docs/sessions/009-m2-g4-altivec/). |
+| G4 (PPC 7450) + AltiVec Tiger | emac (build) / pbookg42, mdd (test) | 🟡 M2 explored, no measurable win | `TIGER_ARCH=g4-altivec` adds `-maltivec -mabi=altivec -ftree-vectorize`.  Builds cleanly; runs cleanly on G4 Tiger + Leopard; **dyld-rejects on G3** (`incompatible cpu-subtype`).  gcc-4.9 auto-vectorization at `-O2 -ftree-vectorize` finds essentially nothing in Janet's scalar bytecode interpreter — performance indistinguishable from plain G4 tarball (within ±0.002 s on every workload).  Hand-rolled AltiVec source patches dropped as future work. |
 | G5 (PPC 970) Tiger | pmacg5 | ❌ M3 | `tools/patch-header.janet` Bus error on G5 in 1.27.0; needs bootstrap-on-G3 workaround. |
-| G4 Leopard | TBD | ❌ Later | Leopard is more POSIX, so mechanically easier. |
+| G4 Leopard | pbookg42, mdd | 🟡 Smoked | Tiger-built G4 tarballs run on Leopard 10.5.8 G4 too (forward-compat); not productized as a separate Leopard build.  Session 009 ran the smoke on `pbookg42` (PowerBook5,2) and `mdd` (PowerMac3,6 MDD). |
 | ppc64 Tiger | TBD | ❌ M3 | 64-bit variant; separate tarball. |
 
 ### Language & libraries
@@ -122,8 +123,8 @@ Legend: ✅ Working / 🟡 Partial or pinned / ❌ Missing.
 | Native module loading (smoke = [janet-lzo](https://github.com/cellularmitosis/janet-lzo)) | ✅ M1.a | `lzo.c` built via [`scripts/build-janet-lzo-remote.sh`](scripts/build-janet-lzo-remote.sh) (jpm's canonical darwin recipe: `-fPIC -shared -undefined dynamic_lookup`).  Dropped into `lib/janet/lzo.so` and round-tripped via `(import lzo) (lzo/decompress (lzo/compress @"hello"))` on ibookg37 (clean Tiger G3) — session 003. |
 | `os/spawn` (subprocess) | ✅ M1.b | `posix_spawn` fork+execve fallback (patches 0002 / 0003 / 0004, session 006).  `suite-os.janet` 57/58 on ibookg38 (the one fail is unrelated — `os/realpath`).  See [`docs/sessions/006-posix-spawn-fallback/`](docs/sessions/006-posix-spawn-fallback/). |
 | `jpm install` from git URL | ✅ M1.b | `jpm install https://github.com/cellularmitosis/janet-lzo.git` succeeds on clean ibookg37: git fetch + gcc-4.9 build + `cp` install + `(import lzo)` round-trip, every subprocess via the fork+execve fallback.  See [`docs/sessions/007-jpm-install-and-release/`](docs/sessions/007-jpm-install-and-release/). |
-| AltiVec via `-mcpu=7450 -maltivec` | ❌ M2 | Compiler flags only; no source patches. |
-| AltiVec source patches | ❌ Deferred | Only if M2 measurement justifies.  See [docs/deferred.md](docs/deferred.md). |
+| AltiVec via `-mcpu=7450 -maltivec` | 🟡 M2 explored | Compiler-flag-only AltiVec build works (`TIGER_ARCH=g4-altivec scripts/build-tiger.sh`), but gcc-4.9 auto-vec at `-O2 -ftree-vectorize` finds nothing to vectorize in Janet's interpreter.  Net gain on a mixed benchmark: ~0%.  See [session 009](docs/sessions/009-m2-g4-altivec/). |
+| AltiVec source patches | ❌ Won't do | Empirically dropped after session 009.  Compiler-flag AltiVec already gives 0% gain, so source-level intrinsics would mean hand-targeting hot loops in Janet's scalar bytecode interpreter — speculative, fragile against upstream, and not a clear win on interpreter dispatch. |
 
 ### Linking & install
 

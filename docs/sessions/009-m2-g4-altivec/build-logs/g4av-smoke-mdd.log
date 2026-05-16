@@ -1,0 +1,22 @@
+=== host ===
+Darwin 9.8.0 Power Macintosh
+10.5.8
+PowerMac3,6
+=== smoke (mdd has no /opt/macports-legacy-support-20221029) ===
+hello from g4-altivec on macos ppc  host=mdd
+=== bench ===
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    1.921 s
+   (= 832040)
+  mandelbrot             0.829 s
+   (= 786476)
+  peg-match              0.401 s
+   (= 0)
+  marshal                0.551 s
+   (= 23040)
+
+  total:                 3.702 s

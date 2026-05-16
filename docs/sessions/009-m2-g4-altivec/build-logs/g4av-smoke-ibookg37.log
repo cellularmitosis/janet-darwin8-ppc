@@ -1,0 +1,6 @@
+=== host ===
+Darwin 8.11.0 Power Macintosh
+10.4.11
+PowerBook4,3
+=== AltiVec-built binary on G3 — expect SIGILL or success depending on auto-vec coverage ===
+dyld: incompatible cpu-subtype

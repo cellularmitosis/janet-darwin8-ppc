@@ -1,0 +1,22 @@
+=== host ===
+Darwin 9.8.0 Power Macintosh
+10.5.8
+PowerBook5,2
+=== smoke ===
+hello from g4-altivec on macos ppc  host=pbookg42
+=== bench ===
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    1.926 s
+   (= 832040)
+  mandelbrot             0.831 s
+   (= 786476)
+  peg-match              0.406 s
+   (= 0)
+  marshal                0.549 s
+   (= 23040)
+
+  total:                 3.712 s

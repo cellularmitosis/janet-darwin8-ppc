@@ -65,10 +65,15 @@ send them when the patch is solid; upstream reviews at their pace.
 
 ## Performance work
 
-- **AltiVec source patches** (if M2's non-invasive AltiVec via
-  compiler flags doesn't get us most of the win).  Likely candidates:
-  hot loops in `src/core/{vm,corelib,marsh}.c`, GC `memcpy`/`bzero`
-  paths.
+- **~~AltiVec source patches~~** *(closed — session 009)*.  The
+  pre-condition was "if M2's non-invasive AltiVec doesn't get us
+  most of the win."  M2 was explored end-to-end: non-invasive
+  AltiVec (`-mcpu=7450 -maltivec -mabi=altivec -ftree-vectorize`)
+  gives ~0% gain on Janet's standard workload, because gcc-4.9's
+  auto-vectorizer finds nothing SIMD-shaped in the scalar bytecode
+  interpreter.  Hand-rolled intrinsics would be speculative work
+  with no obvious SIMD-shaped target.  See
+  [session 009 findings](sessions/009-m2-g4-altivec/README.md#findings).
 
 ## Tooling / quality-of-life
 

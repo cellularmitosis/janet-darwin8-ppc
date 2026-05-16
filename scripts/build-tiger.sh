@@ -34,6 +34,11 @@ cd "$REPO_ROOT"
 : "${REMOTE_DIR:=tmp/janet-build}"
 : "${LEGACY_SUPPORT_PREFIX:=/opt/macports-legacy-support-20221029}"
 : "${BYO_MACPORTS_LEGACY:=}"
+# Extra C flags appended to "-O2 -g".  Default empty (G3 build, no
+# tuning beyond gcc's PPC defaults).  M2 G4 builds set
+# CFLAGS_EXTRA="-mcpu=7450" (and "-mcpu=7450 -maltivec -mabi=altivec"
+# for the AltiVec variant); see TIGER_ARCH presets below.
+: "${CFLAGS_EXTRA:=}"
 # Optional project-level revision marker appended to the tarball
 # basename (NOT to PREFIX or the binary's janet/version, since both
 # of those still want to match upstream).  Use when we cut a second
@@ -41,6 +46,26 @@ cd "$REPO_ROOT"
 # collide on the CDN.  Example: RELEASE_REV=r2 →
 #   janet-1.41.3-dev-r2-tiger-g3.tar.gz
 : "${RELEASE_REV:=}"
+
+# TIGER_ARCH presets: G3 (default, no tuning), G4 (-mcpu=7450), and
+# G4 + AltiVec.  An explicit CFLAGS_EXTRA from the caller wins, so
+# we only fill in the preset when the caller left it empty.
+if [ -z "$CFLAGS_EXTRA" ]; then
+    case "$TIGER_ARCH" in
+        g3)         CFLAGS_EXTRA="" ;;
+        g4)         CFLAGS_EXTRA="-mcpu=7450" ;;
+        # AltiVec preset adds -ftree-vectorize because gcc-4.9 doesn't
+        # auto-vectorize at -O2 by default — without it, -maltivec
+        # would only matter for hand-written intrinsics (which Janet
+        # has none of) and the resulting binary would be byte-identical
+        # to the plain -mcpu=7450 build.  -ftree-vectorize lets gcc
+        # actually try AltiVec on scalar loops, giving us an honest
+        # "AltiVec compiler flags only" benchmark vs. the plain G4
+        # build.
+        g4-altivec) CFLAGS_EXTRA="-mcpu=7450 -maltivec -mabi=altivec -ftree-vectorize" ;;
+        *) ;; # unknown arch — leave CFLAGS_EXTRA empty, caller knows what they're doing
+    esac
+fi
 
 # Janet version comes from upstream's janetconf.h after patches apply.
 # Pull it from the freshly-patched source.
@@ -68,6 +93,7 @@ PREFIX="/opt/janet-${JANET_VERSION}"
 echo "=== build-tiger.sh ==="
 echo "    host:        $TIGER_HOST"
 echo "    arch:        $TIGER_ARCH"
+echo "    cflags+:     ${CFLAGS_EXTRA:-(none)}"
 echo "    janet ver:   $JANET_VERSION"
 echo "    prefix:      $PREFIX"
 echo "    tarball:     $TARBALL"
@@ -95,6 +121,7 @@ ssh "$TIGER_HOST" \
      TARBALL='$TARBALL' \
      LEGACY_SUPPORT_PREFIX='$LEGACY_SUPPORT_PREFIX' \
      BYO_MACPORTS_LEGACY='$BYO_MACPORTS_LEGACY' \
+     CFLAGS_EXTRA='$CFLAGS_EXTRA' \
      REMOTE_DIR='$REMOTE_DIR' \
      '$REMOTE_DIR/build-tiger-remote.sh'"
 

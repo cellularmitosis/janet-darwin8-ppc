@@ -1,0 +1,28 @@
+=== host ===
+Darwin 8.11.0 Power Macintosh
+10.4.11
+PowerMac6,4
+=== file ===
+/Users/macuser/tmp/g4av-smoke/janet-1.41.3-dev/bin/janet: Mach-O executable ppc
+=== otool -L ===
+/Users/macuser/tmp/g4av-smoke/janet-1.41.3-dev/bin/janet:
+	@loader_path/../lib/libMacportsLegacySupport.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 88.1.12)
+=== smoke ===
+hello from g4-altivec 1.41.3-dev on macos ppc
+=== bench ===
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    1.744 s
+   (= 832040)
+  mandelbrot             0.736 s
+   (= 786476)
+  peg-match              0.355 s
+   (= 0)
+  marshal                0.496 s
+   (= 23040)
+
+  total:                 3.331 s

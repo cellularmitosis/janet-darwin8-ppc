@@ -127,19 +127,49 @@ Each item is roughly one session.
     - Upstream PR for the `posix_spawn` patches queued in
       [`deferred.md`](deferred.md) (independent timeline).
 
-## M2 — G4 + AltiVec exploration
+## M2 — G4 + AltiVec exploration *(✅ explored; no release artifact)*
 
-8. **G4 build with `-mcpu=7450`.**  Non-invasive — just a different
-   tigersh recipe path.  Probably trivial.  Tarball:
-   `janet-X.Y.Z-tiger-g4.tar.gz`.
+Done in [session 009](sessions/009-m2-g4-altivec/).  Build
+infrastructure now supports G3, G4, and G4+AltiVec via a single env
+knob (`TIGER_ARCH={g3,g4,g4-altivec} scripts/build-tiger.sh`).
+Empirical conclusion: non-invasive AltiVec at gcc-4.9 `-O2
+-ftree-vectorize` gives essentially zero gain on Janet's standard
+workload — the bytecode interpreter has no SIMD-shaped hot loop for
+the auto-vectorizer to find.  No M2 release; v0.2.1's G3 tarball
+remains the recommended download for G3/G4/G5 alike.
 
-9. **AltiVec compiler flags (`-maltivec -mabi=altivec`).**  Compile
-   and benchmark vs the G3 build on G4 hardware.  Document gains.
+8. **✅ G4 build with `-mcpu=7450`.** *(session 009)*  Built on
+   emac (1.42 GHz G4 eMac, Tiger 10.4.11).  Verified on emac,
+   pbookg42 (Leopard G4), and mdd (Leopard G4 MDD, **no
+   `/opt/macports-legacy-support-20221029` installed** — bundled
+   `@loader_path` resolution does the lifting).  `bin/janet` is
+   byte-different from the G3 build but coincidentally identical in
+   size; `libjanet.dylib` grows by ~2 KB.  **Critically**: plain
+   `-mcpu=7450` alone flips the Mach-O `cpu-subtype` to G4, so
+   `dyld` on G3 prints `incompatible cpu-subtype` and refuses
+   to load — better behavior than a mid-execution SIGILL.
+   Tarball: `janet-1.41.3-dev-r3-tiger-g4.tar.gz` (1.75 MB).
+   Released artifact: **none** — see point 9 for why.
 
-10. **AltiVec source patches (if measurement justifies).**  Likely
-    candidates: hot loops in `src/core/{vm,corelib,marsh}.c`,
-    memcpy/bzero in the GC.  Out of scope if non-invasive AltiVec
-    gives most of the win.
+9. **✅ AltiVec compiler flags (`-maltivec -mabi=altivec
+   -ftree-vectorize`).** *(session 009)*  `-ftree-vectorize` added
+   because gcc-4.9 at `-O2` doesn't auto-vectorize by default, so
+   without it `-maltivec` would be a no-op vs plain `-mcpu=7450`.
+   Benchmark on emac (5 runs each, best-of): **G3 baseline 3.288 s,
+   G4 3.281 s (−0.2%), G4+AltiVec 3.283 s (−0.2%)** on a mixed
+   fib/mandelbrot/peg/marshal workload.  Per-workload: mandelbrot
+   −2.6% (FP gain from 7450 scheduling), fib +0.6%, peg +2.0%
+   slower, marshal flat.  G4 vs G4+AltiVec indistinguishable
+   (auto-vec finds essentially nothing in the interpreter).  **No
+   release** — shipping a G4 / G4+AltiVec tarball at leopard.sh
+   would advertise a no-op variant.  Build pipeline keeps the
+   capability for anyone who wants it.
+
+10. **❌ AltiVec source patches — won't do.** *(session 009)*
+    Was conditional on M2's non-invasive AltiVec showing a clear
+    win.  It didn't.  Hand-rolled intrinsics in Janet's VM would
+    be speculative work targeting a scalar bytecode interpreter
+    with no obvious SIMD-shaped hot loop.  Closing.
 
 ## M3 — G5 / 64-bit
 

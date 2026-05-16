@@ -16,6 +16,19 @@
 #                             install_name from
 #                             $LEGACY_SUPPORT_PREFIX/lib/, so runtime
 #                             requires that dep at the same path.
+#   CFLAGS_EXTRA            — optional extra C flags appended to the
+#                             default "-O2 -g".  Used for the M2 G4
+#                             tarballs (e.g. "-mcpu=7450" or
+#                             "-mcpu=7450 -maltivec -mabi=altivec").
+#                             Only affects the final BUILD_CFLAGS in
+#                             Janet's Makefile (bin/janet +
+#                             libjanet.dylib + native modules).  The
+#                             bootstrap binary `janet_boot` uses
+#                             BOOT_CFLAGS which is independent of
+#                             CFLAGS, so it stays generic-PPC even
+#                             under a -mcpu=7450 build — that's fine
+#                             because janet_boot only runs on the
+#                             build host during the build.
 #   REMOTE_DIR              — absolute or $HOME-relative path containing
 #                             the rsync'd janet source.  cwd on entry.
 #
@@ -32,6 +45,7 @@ set -e -o pipefail
 : "${LEGACY_SUPPORT_PREFIX:?LEGACY_SUPPORT_PREFIX must be set}"
 : "${REMOTE_DIR:?REMOTE_DIR must be set}"
 : "${BYO_MACPORTS_LEGACY:=}"
+: "${CFLAGS_EXTRA:=}"
 
 SRC_DIR="$HOME/$REMOTE_DIR"
 STAGE_DIR="$HOME/tmp/janet-staging-$JANET_VERSION"
@@ -46,6 +60,11 @@ echo
 export PATH=/opt/gcc-4.9.4/bin:/opt/make-4.3/bin:/opt/ld64-97.17-tigerbrew/bin:$PATH
 export CC=gcc-4.9
 export CPPFLAGS="-I$LEGACY_SUPPORT_PREFIX/include/LegacySupport"
+# Janet's Makefile uses `CFLAGS?=-O2 -g` so an exported CFLAGS wins;
+# we keep the upstream default and tack on CFLAGS_EXTRA (e.g.
+# -mcpu=7450 for G4 builds).  Empty CFLAGS_EXTRA → identical to a G3
+# build.
+export CFLAGS="-O2 -g $CFLAGS_EXTRA"
 LDFLAGS_VAL="-L$LEGACY_SUPPORT_PREFIX/lib -lMacportsLegacySupport"
 if [ -z "$BYO_MACPORTS_LEGACY" ]; then
     # Bundled mode: -static-libgcc folds gcc-4.9.4's libgcc helper
@@ -62,6 +81,8 @@ cd "$SRC_DIR"
 
 echo "=== compiler ==="
 $CC --version | head -1
+echo "    CFLAGS:  $CFLAGS"
+echo "    LDFLAGS: $LDFLAGS"
 
 echo "=== make clean ==="
 make clean

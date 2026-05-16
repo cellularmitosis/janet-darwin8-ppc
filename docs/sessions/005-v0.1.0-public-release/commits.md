@@ -2,7 +2,7 @@
 
 Outer-repo commits landed this session, oldest-first.
 
-- `<SHA>` — session 005: v0.1.0 public release
+- [`73444b4`](https://github.com/cellularmitosis/janet-darwin8-ppc/commit/73444b4) — session 005: v0.1.0 public release
   - `README.md`:
     - Status section: M1.a flipped from "built and verified locally"
       to "released" with v0.1.0 GitHub release link and mention of

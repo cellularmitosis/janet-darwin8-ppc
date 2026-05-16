@@ -1,0 +1,74 @@
+Sanity-check: fresh curl-install on ibookg37 from leopard.sh public URL.
+
+ibookg37 had an existing /opt/janet-1.41.3-dev/ from session 003
+(local build, reports `1.41.3-dev-local`, has lzo.so installed).
+Moved aside to /opt/janet-1.41.3-dev.bak.005/ before this test.
+
+== Step 1: curl-install from leopard.sh ==
+
+$ ssh ibookg37 'cd /opt && curl -fsSL http://leopard.sh/misc/beta/janet-1.41.3-dev-tiger-g3.tar.gz | gunzip | tar x && ls -la /opt/janet-1.41.3-dev/bin/ && /opt/janet-1.41.3-dev/bin/janet -e "(print \"hello from janet on tiger ppc\")" && /opt/janet-1.41.3-dev/bin/janet -e "(print janet/version)" && otool -L /opt/janet-1.41.3-dev/bin/janet'
+
+total 1424
+drwxr-xr-x   3 macuser  admin     102 May 15 23:06 .
+drwxr-xr-x   6 macuser  admin     204 May 15 23:06 ..
+-rwxr-xr-x   1 macuser  admin  728760 May 15 23:06 janet
+hello from janet on tiger ppc
+1.41.3-dev
+/opt/janet-1.41.3-dev/bin/janet:
+	@loader_path/../lib/libMacportsLegacySupport.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/usr/lib/libgcc_s.1.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/opt/gcc-4.9.4/lib/libgcc_s.1.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 88.1.12)
+
+Notes:
+- Tarball downloaded over plain HTTP from http://leopard.sh/misc/
+  beta/ — works without any TLS / curl-build dance.
+- `janet/version` = `1.41.3-dev`.  (The session-003 build that we
+  moved aside reports `1.41.3-dev-local`; that was a separate local
+  rebuild on ibookg37 during session 003's lzo work, not the
+  released tarball.)
+- `bin/janet` references `@loader_path/../lib/libMacportsLegacySupport.dylib`
+  — confirms the LC_RPATH-free install-name strategy ships in the
+  released artifact.
+
+== Step 2: demo (no lzo.so — fresh install) ==
+
+$ ssh ibookg37 'bash /tmp/v0.1.0-hello.sh'
+
+=== janet-darwin8-ppc v0.1.0 hello — Janet 1.41.3-dev on macos/ppc ===
+
+[1] peg/match parsed "1.41.3-dev" -> @["1.41.3" "dev"]
+[2] fiber yielded fib(0..11) = @[0 1 1 2 3 5 8 13 21 34 55 89]
+[3] string/format: pi=3.14159  hex=ff  pad=    42|
+[4] lzo: skipped (module not found)
+    drop lzo.so into /opt/janet-1.41.3-dev/lib/janet/ to enable
+
+ok.
+
+== Step 3: demo with lzo.so dropped in ==
+
+Copied lzo.so from the bak install:
+
+$ ssh ibookg37 'cp /opt/janet-1.41.3-dev.bak.005/lib/janet/lzo.so /opt/janet-1.41.3-dev/lib/janet/ && bash /tmp/v0.1.0-hello.sh'
+
+=== janet-darwin8-ppc v0.1.0 hello — Janet 1.41.3-dev on macos/ppc ===
+
+[1] peg/match parsed "1.41.3-dev" -> @["1.41.3" "dev"]
+[2] fiber yielded fib(0..11) = @[0 1 1 2 3 5 8 13 21 34 55 89]
+[3] string/format: pi=3.14159  hex=ff  pad=    42|
+[4] lzo: 9000 -> 108 bytes (ratio 0.0120), round-trip ok=true
+
+ok.
+
+== Step 4: restore ==
+
+$ ssh ibookg37 'rm -rf /opt/janet-1.41.3-dev && mv /opt/janet-1.41.3-dev.bak.005 /opt/janet-1.41.3-dev && /opt/janet-1.41.3-dev/bin/janet -v && ls /opt/janet-1.41.3-dev/lib/janet/'
+
+1.41.3-dev-local
+lzo.so
+
+Conclusion: the public artifact at
+http://leopard.sh/misc/beta/janet-1.41.3-dev-tiger-g3.tar.gz is a
+clean, standalone install that round-trips Janet's hello, the four-
+step demo, and a third-party native module (lzo) loaded from
+$prefix/lib/janet/.

@@ -18,9 +18,9 @@ hardware.
 
 ## Status
 
-**M1.a built and verified locally** (session 002):
+**M1.a released** ([v0.1.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.1.0)):
 
-- [`releases/janet-1.41.3-dev-tiger-g3.tar.gz`](releases/) —
+- [`janet-1.41.3-dev-tiger-g3.tar.gz`](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/download/v0.1.0/janet-1.41.3-dev-tiger-g3.tar.gz) —
   curl-installable 1.7 MB tarball.
 - Built on ibookg38 (Tiger G3, gcc-4.9.4), verified on ibookg37
   (clean Tiger G3 — no compiler, no source).
@@ -30,12 +30,10 @@ hardware.
 - `os/spawn`, `os/execute`, `os/shell`, `os/posix-fork`,
   `os/posix-exec` are absent under `JANET_NO_PROCESSES` (M1.a
   scope; the `posix_spawn` fork+execve fallback is M1.b).
-- Not yet released publicly — GitHub release + scp to leopard.sh
-  is session 003.
+- Mirrored at `http://leopard.sh/misc/beta/janet-1.41.3-dev-tiger-g3.tar.gz`
+  for the curl-install one-liner.
 
 ## Try it out!
-
-_(Sketch — public release pending session 003.)_
 
 On any G3, G4, or G5 Mac running Tiger:
 
@@ -48,6 +46,9 @@ cd /opt
 curl http://leopard.sh/misc/beta/janet-1.41.3-dev-tiger-g3.tar.gz | gunzip | tar x
 /opt/janet-1.41.3-dev/bin/janet -e '(print "hello from janet on tiger ppc")'
 ```
+
+For a richer four-step smoke (PEG / fiber / `string/format` / optional
+LZO round-trip), see [`demos/v0.1.0-hello.{janet,sh}`](demos/).
 
 ## Why
 
@@ -81,7 +82,7 @@ Legend: ✅ Working / 🟡 Partial or pinned / ❌ Missing.
 
 | Arch | Host | Status | Notes |
 |---|---|---|---|
-| G3 (PPC 750) Tiger | ibookg38 (build) / ibookg37 (test) | 🟡 M1.a built, M1.b pending | M1.a tarball built and locally verified (session 002).  M1.b (posix_spawn fallback) is the remaining critical-path item. |
+| G3 (PPC 750) Tiger | ibookg38 (build) / ibookg37 (test) | 🟡 M1.a released, M1.b pending | M1.a tarball [released as v0.1.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.1.0) (session 005).  M1.b (posix_spawn fallback) is the remaining critical-path item. |
 | G4 (PPC 7450) Tiger | TBD | ❌ M2 | Adds `-mcpu=7450 -maltivec`.  |
 | G5 (PPC 970) Tiger | pmacg5 | ❌ M3 | `tools/patch-header.janet` Bus error on G5 in 1.27.0; needs bootstrap-on-G3 workaround. |
 | G4 Leopard | TBD | ❌ Later | Leopard is more POSIX, so mechanically easier. |
@@ -102,7 +103,7 @@ Legend: ✅ Working / 🟡 Partial or pinned / ❌ Missing.
 
 | Surface | Status | Notes |
 |---|---|---|
-| Standalone `/opt/janet-X.Y.Z/` tarball | ✅ M1.a (local) | Tarball built in session 002.  Curl-installable; ships macports-legacy-support's dylib under `lib/`.  Public release pending. |
+| Standalone `/opt/janet-X.Y.Z/` tarball | ✅ M1.a | Tarball built in session 002, released as [v0.1.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.1.0) in session 005.  Curl-installable; ships macports-legacy-support's dylib under `lib/`. |
 | `@loader_path` install names | ✅ M1.a | `bin/janet` → `@loader_path/../lib/...`; bundled dylibs self-id'd to `@loader_path/...`.  Verified on ibookg37. |
 | BYO macports-legacy-support build mode | ❌ M1.b | For leopard.sh / developers with the lib already installed.  Lands alongside the `posix_spawn` fix. |
 
@@ -110,7 +111,7 @@ Legend: ✅ Working / 🟡 Partial or pinned / ❌ Missing.
 
 | Tag | Date | Notes |
 |---|---|---|
-| _(M1.a built locally; public release pending)_ | 2026-05-15 | `janet-1.41.3-dev-tiger-g3.tar.gz` built and verified on ibookg37.  See [`docs/sessions/002-no-processes-stub-and-first-tarball/`](docs/sessions/002-no-processes-stub-and-first-tarball/). |
+| [v0.1.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.1.0) | 2026-05-16 | First M1.a release.  `janet-1.41.3-dev-tiger-g3.tar.gz` — pure-Janet REPL + native-module loader on Tiger G3.  No `os/spawn` (deferred to M1.b).  Built session 002, demo'd session 004, released session 005. |
 
 ## How it's built
 

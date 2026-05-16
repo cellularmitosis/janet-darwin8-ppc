@@ -63,12 +63,18 @@ Each item is roughly one session.
      `libMacportsLegacySupport.dylib` proven against a clean host
      without `jpm install`.
 
-6. **First release.** *(demo done session 004; release queued for 005)*
-   - Version: v0.1.0 (or whatever feels right; we'll set the cadence
-     in session 001).
-   - GitHub release with `janet-X.Y.Z-tiger-g3.tar.gz` attached.
-   - scp to `mini10v` + `leopard.sh:/var/www/html/misc/beta/`.
-   - README "Try it out!" curl one-liner updated.
+6. **✅ First release.** *(session 005)*
+   - Released as [v0.1.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.1.0).
+   - GitHub release with `janet-1.41.3-dev-tiger-g3.tar.gz` attached.
+   - scp'd to `mini10v:/var/www/html/misc/beta/` (source of truth)
+     and `leopard.sh:.../beta/` (direct, so the URL works
+     immediately).
+   - Outer-README "Try it out!" curl one-liner past the (Sketch)
+     stub.  Releases-table row added.  Implementation-status flipped
+     from `✅ M1.a (local)` → `✅ M1.a`.
+   - Public-URL install sanity-checked on ibookg37 (curl from
+     `http://leopard.sh/misc/beta/...`, demo all green, lzo round-
+     trip when `lzo.so` dropped in).
    - ✅ Demo: [`demos/v0.1.0-hello.{janet,sh}`](../demos/) —
      four-step (PEG / fiber / `string/format` / optional LZO
      round-trip), verified on ibookg37 (with `lzo.so`) and

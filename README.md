@@ -75,11 +75,15 @@ covered upstream — eight of my own PRs to `janet-lang/janet` between
 [macports-legacy-support](https://github.com/macports/macports-legacy-support),
 which backfills the broader libc gap.
 
-The one stubborn remaining piece is `posix_spawn`: Tiger ships no
+The one stubborn remaining piece was `posix_spawn`: Tiger ships no
 `<spawn.h>` and macports-legacy-support doesn't backfill it.  The
-1.27.0 leopard.sh recipe carries a sketch of a `fork()` + `execve()`
-fallback, but it was never debugged to working.  This repo's first
-substantive job is to close that gap.
+1.27.0 leopard.sh recipe carried a sketch of a `fork()` + `execve()`
+fallback that was never debugged to working state.  Closing that gap
+was this repo's first substantive job — done in
+[v0.2.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.0)
+([session 006](docs/sessions/006-posix-spawn-fallback/) for the
+fallback itself, [session 007](docs/sessions/007-jpm-install-and-release/)
+for the `jpm install` end-to-end gate).
 
 See [`docs/plan.md`](docs/plan.md) for the full plan,
 [`docs/roadmap.md`](docs/roadmap.md) for prioritized forward work.
@@ -126,6 +130,7 @@ Legend: ✅ Working / 🟡 Partial or pinned / ❌ Missing.
 
 | Tag | Date | Notes |
 |---|---|---|
+| [v0.2.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.0) | 2026-05-16 | **M1.b release.**  `janet-1.41.3-dev-r2-tiger-g3.tar.gz` (bundled) + `janet-1.41.3-dev-r2-tiger-g3-byo.tar.gz` (BYO macports-legacy-support).  `os/spawn`/`os/execute`/`os/shell` working via the fork+execve fallback.  Acceptance gate: `jpm install janet-lzo` on a clean Tiger box.  Fallback patches landed session 006; release session 007. |
 | [v0.1.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.1.0) | 2026-05-16 | First M1.a release.  `janet-1.41.3-dev-tiger-g3.tar.gz` — pure-Janet REPL + native-module loader on Tiger G3.  No `os/spawn` (deferred to M1.b).  Built session 002, demo'd session 004, released session 005. |
 
 ## How it's built

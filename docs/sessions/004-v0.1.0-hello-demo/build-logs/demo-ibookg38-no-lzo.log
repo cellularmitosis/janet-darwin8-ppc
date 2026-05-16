@@ -1,0 +1,11 @@
+
+=== janet-darwin8-ppc v0.1.0 hello — Janet 1.41.3-dev on macos/ppc ===
+
+[1] peg/match parsed "1.41.3-dev" -> @["1.41.3" "dev"]
+[2] fiber yielded fib(0..11) = @[0 1 1 2 3 5 8 13 21 34 55 89]
+[3] string/format: pi=3.14159  hex=ff  pad=    42|
+[4] lzo: skipped (module not found)
+    drop lzo.so into /opt/janet-1.41.3-dev/lib/janet/ to enable
+
+ok.
+

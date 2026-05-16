@@ -63,13 +63,16 @@ Each item is roughly one session.
      `libMacportsLegacySupport.dylib` proven against a clean host
      without `jpm install`.
 
-6. **First release.**
+6. **First release.** *(demo done session 004; release queued for 005)*
    - Version: v0.1.0 (or whatever feels right; we'll set the cadence
      in session 001).
    - GitHub release with `janet-X.Y.Z-tiger-g3.tar.gz` attached.
    - scp to `mini10v` + `leopard.sh:/var/www/html/misc/beta/`.
    - README "Try it out!" curl one-liner updated.
-   - Demo: `demos/v0.1.0-hello.{janet,sh}`.
+   - ✅ Demo: [`demos/v0.1.0-hello.{janet,sh}`](../demos/) —
+     four-step (PEG / fiber / `string/format` / optional LZO
+     round-trip), verified on ibookg37 (with `lzo.so`) and
+     ibookg38 (without).  Session 004.
 
 ### M1.b — `posix_spawn` fallback + jpm install (final M1 release)
 

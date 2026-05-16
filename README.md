@@ -52,8 +52,10 @@ On any G3, G4, or G5 Mac running Tiger:
 sudo mkdir -p /opt
 sudo chmod ugo+rwx /opt
 cd /opt
-# Prerequisites (installed by tigersh, see leopard.sh):
-#   gcc-libs-4.9.4, macports-legacy-support-20221029
+# Prereq (installed by tigersh, see leopard.sh):  gcc-libs-4.9.4
+# (macports-legacy-support is bundled inside this tarball via
+# @loader_path, so it's not a system-level requirement here -- the
+# -byo.tar.gz variant is the one that needs it installed at /opt.)
 curl http://leopard.sh/misc/beta/janet-1.41.3-dev-r2-tiger-g3.tar.gz | gunzip | tar x
 /opt/janet-1.41.3-dev/bin/janet -e '(print "hello from janet on tiger ppc")'
 ```

@@ -2,7 +2,7 @@
 
 Outer-repo commits landed this session, oldest-first.
 
-- `<sha>` — session 004: v0.1.0-hello demo
+- [`9541093`](https://github.com/cellularmitosis/janet-darwin8-ppc/commit/9541093) — session 004: v0.1.0-hello demo
   - `demos/v0.1.0-hello.janet` — four-step demo (peg/match, fiber,
     string/format, optional lzo round-trip).  Uses runtime `require`
     for lzo so the demo degrades cleanly when `lzo.so` is absent.

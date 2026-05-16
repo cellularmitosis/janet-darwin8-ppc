@@ -1,0 +1,66 @@
+From 9e45bf97135b8fa602fb976f6bb95fc3e06ab4de Mon Sep 17 00:00:00 2001
+From: janet-darwin8-ppc <janet-darwin8-ppc@local>
+Date: Sat, 16 May 2026 02:27:33 -0500
+Subject: [PATCH 6/6] test/suite-os: add tests for os/execute :cd argument
+
+The test suite previously had no coverage for the :cd argument to
+os/execute / os/spawn, even though it is gated by a JANET_SPAWN_CHDIR
+feature macro covering three distinct backends:
+
+  - posix_spawn_file_actions_addchdir on glibc Linux and FreeBSD;
+  - posix_spawn_file_actions_addchdir_np on macOS 10.15+;
+  - chdir() inside the forked child for non-posix_spawn fallbacks
+    (e.g. macOS 10.4 Tiger, where posix_spawn{,p} is unavailable
+    and Janet must fall back to fork+execve).
+
+Two cases added:
+
+  - :cd to an existing directory --- exercises the chdir success
+    path through to a successful exec.
+  - :cd to a nonexistent directory --- exercises the chdir failure
+    path.  For posix_spawn backends the error surfaces via the
+    spawn-call status; for the fork+execve fallback it surfaces via
+    a CLOEXEC errpipe carrying the chdir errno back from the child
+    to the parent, which then reaps the zombie before panicking.
+
+Platforms lacking :cd support (Windows, mingw, macOS 10.5-10.14
+without the fork+execve fallback, non-glibc Linux) panic at
+arg-parse time with ":cd argument not supported on this system".
+A runtime probe detects this and uses skip-asserts to gate the
+two new tests, so the suite stays green on those platforms.
+---
+ test/suite-os.janet | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/test/suite-os.janet b/test/suite-os.janet
+index 965dff1a..606df059 100644
+--- a/test/suite-os.janet
++++ b/test/suite-os.janet
+@@ -191,6 +191,27 @@
+                                :px
+                                {:out dn :err dn})))
+ 
++# os/execute with :cd
++# Skip on platforms without :cd support.  Janet's :cd argument
++# requires JANET_SPAWN_CHDIR, defined on Linux (glibc), macOS 10.15+,
++# FreeBSD, and the fork+execve fallback path.  Other platforms panic
++# with ":cd argument not supported on this system" at arg-parse time.
++(when (try
++        (do (os/execute [;run janet "-e" "(os/exit 0)"] :p
++                        {:cd (os/cwd)})
++            false)
++        ([err]
++          (if (string/has-prefix? ":cd argument not supported" err)
++            true
++            (error err))))
++  (skip-asserts 2))
++(assert-no-error "os/execute with :cd to existing dir"
++                 (os/execute [;run janet "-e" "(os/exit 0)"] :p
++                             {:cd (os/cwd)}))
++(assert-error "os/execute with :cd to nonexistent dir"
++              (os/execute [;run janet "-e" "(+ 1 1)"] :p
++                          {:cd "/nonexistent-abc123def456"}))
++
+ # Issue 16922
+ (assert-error "os/realpath errors when path does not exist"
+               (os/realpath "abc123def456"))

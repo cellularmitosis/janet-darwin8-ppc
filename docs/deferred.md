@@ -33,6 +33,16 @@ send them when the patch is solid; upstream reviews at their pace.
   Mach shim is dead code in our world.  An upstream simplification
   would change the gate to feature-detection (`!_POSIX_TIMERS` or
   similar), or remove the shim entirely.  Low priority; cosmetic.
+  Prototype landed as
+  [`patches/0006`](../patches/0006-util.c-opt-out-for-Mach-clock_get_time-shim-via-JANE.patch)
+  (`JANET_NO_MACH_CLOCK_SHIM` opt-out).
+- **Audit of merged PRs vs macports-legacy-support coverage.**  See
+  [`proposals/merged-prs-vs-mlsupport.md`](proposals/merged-prs-vs-mlsupport.md).
+  Maps each of the user's merged upstream PRs (#432 O_CLOEXEC, #436
+  arc4random_buf, `f06e9ae3` /dev/urandom, #937 Mach clock shim)
+  against what mlsupport actually provides on Tiger.  Verdict: only
+  PR #937 is worth an upstream simplification follow-up; the others
+  earn their keep for builders without mlsupport.
 
 ## Tarball variants
 

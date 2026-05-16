@@ -46,7 +46,17 @@ echo
 export PATH=/opt/gcc-4.9.4/bin:/opt/make-4.3/bin:/opt/ld64-97.17-tigerbrew/bin:$PATH
 export CC=gcc-4.9
 export CPPFLAGS="-I$LEGACY_SUPPORT_PREFIX/include/LegacySupport"
-export LDFLAGS="-L$LEGACY_SUPPORT_PREFIX/lib -lMacportsLegacySupport"
+LDFLAGS_VAL="-L$LEGACY_SUPPORT_PREFIX/lib -lMacportsLegacySupport"
+if [ -z "$BYO_MACPORTS_LEGACY" ]; then
+    # Bundled mode: -static-libgcc folds gcc-4.9.4's libgcc helper
+    # routines into the binary, so the tarball doesn't carry a runtime
+    # dep on /opt/gcc-4.9.4/lib/libgcc_s.1.dylib (i.e. doesn't require
+    # tigersh's gcc-libs-4.9.4 package on the host).  Tiger's stock
+    # /usr/lib/libgcc_s.1.dylib is still in the link for the ABI
+    # baseline -- it's always present on Tiger.
+    LDFLAGS_VAL="$LDFLAGS_VAL -static-libgcc"
+fi
+export LDFLAGS="$LDFLAGS_VAL"
 
 cd "$SRC_DIR"
 

@@ -1,0 +1,134 @@
+# Roadmap
+
+Prioritized forward work.  This file evolves as sessions land; the
+fixed reference is [`docs/plan.md`](plan.md).
+
+## M1 — G3 standalone build, native modules work
+
+Two releases.  The first (M1.a) ships the pure-Janet REPL and
+native-module loader.  The second (M1.b) adds `posix_spawn` so
+`os/spawn` and `jpm install` work.  Splitting M1 this way means we
+ship something usable as fast as possible without blocking on the
+posix_spawn fallback, which is genuine engineering work and only
+required for subprocess-using programs.
+
+### M1.a — pure-Janet REPL + native modules (first release)
+
+Each item is roughly one session.
+
+1. **Session 001: bring-up & pin.**
+   - Clone `janet-lang/janet`, pin to a specific master SHA.
+   - Stand up `external/janet/` + `scripts/regen-patches.sh` +
+     `scripts/fetch-janet.sh`.
+   - First attempt: `make` upstream HEAD on ibookg38 against
+     macports-legacy-support, see what breaks.  Capture errors in
+     session notes.
+
+2. **`scripts/build-tiger.sh` — bundled build mode only.**
+   - Fetch janet at the pinned SHA, apply patches, configure
+     CFLAGS / CPPFLAGS / LDFLAGS for macports-legacy-support, build.
+   - Bundle `libMacportsLegacySupport.dylib` under `lib/` of the
+     install prefix.
+   - Emit `janet-X.Y.Z-tiger-g3.tar.gz`.
+   - BYO mode deferred to M1.b.
+
+3. **`install_name_tool` wiring — `@loader_path` everywhere.**
+   - `bin/janet` references `@loader_path/../lib/...`.
+   - `lib/libMacportsLegacySupport.dylib` install_name set to
+     `@loader_path/libMacportsLegacySupport.dylib`.
+   - Verify on a clean ibookg37 install that nothing dangles via
+     `otool -L` audit.
+
+4. **Janet's own test suite — minus `os/spawn`-dependent tests.**
+   - The upstream `make test` battery, run on ibookg38, captured
+     in the session's `build-logs/`.
+   - Anything that depends on `os/spawn` is expected to fail at
+     this stage; mark and skip those, address in M1.b.
+   - Any *other* FAIL is a session-task.
+
+5. **janet-lzo precompiled smoke — validates the native-module
+   loader without needing jpm install.**
+   - Build janet-lzo against our `/opt/janet-X.Y.Z/` on the build
+     host (using `gcc` directly or a simple Makefile target — not
+     `jpm install`, which needs `os/spawn`).
+   - Drop the resulting `.so` into the right Janet module path
+     manually.
+   - Verify `(import lzo) (lzo/decompress (lzo/compress @"hello"))`
+     round-trips on **ibookg37**.
+   - This validates the `@loader_path` wiring + native-module
+     loader independent of jpm.
+
+6. **First release.**
+   - Version: v0.1.0 (or whatever feels right; we'll set the cadence
+     in session 001).
+   - GitHub release with `janet-X.Y.Z-tiger-g3.tar.gz` attached.
+   - scp to `mini10v` + `leopard.sh:/var/www/html/misc/beta/`.
+   - README "Try it out!" curl one-liner updated.
+   - Demo: `demos/v0.1.0-hello.{janet,sh}`.
+
+### M1.b — `posix_spawn` fallback + jpm install (final M1 release)
+
+7. **`posix_spawn` fallback — debug the leopard.sh 1.27.0 sketch
+   to working.**
+   - Start from the inline patch in
+     `install-janet-1.27.0.sh` on leopard.sh.
+   - Trace through `fork` + `execve` + the pipe/file-descriptor
+     plumbing that Janet's `os/spawn` exposes.
+   - Use the previously-skipped `os/spawn` tests in Janet's own
+     suite as the validation surface.
+   - Land as `patches/000N-posix-spawn-fallback.patch`.
+
+8. **BYO macports-legacy-support build mode.**
+   - `scripts/build-tiger.sh` learns `BYO_MACPORTS_LEGACY=1`.
+   - For developers and leopard.sh integration with macports-legacy-
+     support already installed at `/opt/macports-legacy-support-*/`.
+   - Skips the bundling + install_name_tool dylib steps; just
+     references the existing install.
+
+9. **jpm install from git URL works.**
+   - `jpm install https://github.com/cellularmitosis/janet-lzo` on
+     ibookg37 against a clean `/opt/janet-X.Y.Z/` install.
+   - Build chain inside jpm runs (gcc, make, …).
+   - Pass = posix_spawn fallback is solid AND `@loader_path`
+     resolution from inside the freshly-built `.so` works.
+
+10. **Final M1 release.**
+    - Tarball with the `posix_spawn` fallback baked in.
+    - BYO mode documented in `BUILDING.md` or similar.
+    - Demo: `demos/vX.Y.Z-lzo-jpm-install.sh` — full
+      curl→install→`jpm install`→lzo round-trip on a vanilla Tiger
+      box.
+    - Upstream PR for the `posix_spawn` patch as a separate track
+      (its own timeline; we don't gate releases on upstream review).
+
+## M2 — G4 + AltiVec exploration
+
+8. **G4 build with `-mcpu=7450`.**  Non-invasive — just a different
+   tigersh recipe path.  Probably trivial.  Tarball:
+   `janet-X.Y.Z-tiger-g4.tar.gz`.
+
+9. **AltiVec compiler flags (`-maltivec -mabi=altivec`).**  Compile
+   and benchmark vs the G3 build on G4 hardware.  Document gains.
+
+10. **AltiVec source patches (if measurement justifies).**  Likely
+    candidates: hot loops in `src/core/{vm,corelib,marsh}.c`,
+    memcpy/bzero in the GC.  Out of scope if non-invasive AltiVec
+    gives most of the win.
+
+## M3 — G5 / 64-bit
+
+11. **G5 bootstrap workaround.**  The leopard.sh 1.27.0 recipe died
+    at `build/janet tools/patch-header.janet ... → Bus error` on G5.
+    Strategy: build a bootstrap janet on G3, scp it to G5, use it as
+    the host janet during the G5 build (sidesteps the bug).  Root-
+    cause if cheap; ship the workaround if not.
+
+12. **64-bit ppc64 build.**  Separate tarball:
+    `janet-X.Y.Z-tiger-g5-ppc64.tar.gz`.
+
+## Beyond M3
+
+Anything not on the M1/M2/M3 critical path lives in
+[`deferred.md`](deferred.md) — Leopard variants, the amalgamation
+drop, upstream PR follow-ups, etc.  Pull items back into this
+roadmap when they're scheduled for a specific milestone.

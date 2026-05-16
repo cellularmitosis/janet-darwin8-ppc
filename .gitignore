@@ -1,0 +1,5 @@
+external/
+build/
+*.tar.gz
+*.tar.gz.md5
+.DS_Store

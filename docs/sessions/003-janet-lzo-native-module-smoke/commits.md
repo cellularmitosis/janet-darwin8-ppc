@@ -2,7 +2,7 @@
 
 Outer-repo commits landed this session, oldest-first.
 
-- `TBD` — session 003: janet-lzo native-module smoke
+- [`5884d12`](https://github.com/cellularmitosis/janet-darwin8-ppc/commit/5884d12) — session 003: janet-lzo native-module smoke
   - `scripts/build-janet-lzo-remote.sh` — canonical recipe for
     building a Janet native module against this project's tarball
     on a Tiger PPC host.  Implements jpm's macOS link defaults

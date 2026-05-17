@@ -154,112 +154,76 @@ Saved as
 (not a release artifact — kept under that name to make the build
 host unambiguous).
 
-### Item 11.d: G3-built vs G5-built byte-comparison
+### Item 11.d: sanity-check G5-built tarball
 
-Extracted both tarballs and compared the install trees:
-
-| File | G3-built vs G5-built |
-|---|---|
-| `bin/janet` | ✅ byte-identical |
-| `lib/libjanet.1.41.3-dev.dylib` | ✅ byte-identical |
-| `lib/libMacportsLegacySupport.dylib` | ✅ byte-identical |
-| `include/janet/janet.h` | ✅ byte-identical |
-| `share/man/man1/janet.1` | ✅ byte-identical |
-| `lib/libjanet.a` | differs *only* in `ar` archive timestamps; the embedded `janet.o`, `shell.o`, and `__.SYMDEF SORTED` blobs are byte-identical |
-
-**Janet's build is bit-deterministic across G3 and G5 build hosts**
-with our toolchain — *given identical compile flags*.  Same
-gcc-4.9.4 + same Janet source + same mlsupport headers + same
-flags = same binary, modulo `ar` timestamps.
-
-The "identical flags" precondition is the load-bearing part of
-that claim.  Both builds were run with `TIGER_ARCH=g3` (the
-default), which sets `CFLAGS_EXTRA=""` — i.e., **no `-mcpu` flag
-at all**.  Both invocations of gcc-4.9.4 therefore use the
-compiler's built-in default target ("generic powerpc": only
-`__POWERPC__` defined, no `__CPU_POWERPC_750__` / `_970__` /
-`__ALTIVEC__`), independent of whether the gcc binary itself
-happens to be running on a G3 or a G5.
-
-Verified that both build hosts have **identically-configured
-gcc-4.9.4** binaries (same tigersh prebuilt; `gcc-4.9 -v` shows
-the same `Configured with:` string on both, and `gcc-4.9 -E -dM
--x c /dev/null` shows the same set of predefined macros).
-
-A `TIGER_ARCH=g4` build on pmacg5 (passing `-mcpu=7450`) would
-**not** be byte-identical to an ibookg38 `TIGER_ARCH=g3` build —
-session 009 already demonstrated that `-mcpu=7450` alone flips
-the Mach-O cpu-subtype and changes scheduling-sensitive codegen.
-The bit-identicality finding here is specifically about the
-*default-tuning* build, where gcc is asked to emit generic
-powerpc code and produces the same bytes regardless of which
-PowerPC chip the build happens on.
-
-### Item 11.e: bench G5-built tarball on G5
-
-Same harness as 11.b.  Log:
+Extracted both tarballs and ran the G5-built binary on G5.  Smoke
+all green.  Bench best-of-5: 1.682 s total vs 1.701 s for the
+G3-built tarball on the same hardware — ~1% delta, within noise.
+Log:
 [`build-logs/bench-pmacg5-g5built.log`](build-logs/bench-pmacg5-g5built.log).
-Best-of-5: total 1.682 s vs 1.701 s for the G3-built tarball on
-the same hardware.  ~1% delta, within noise — expected, since
-the binaries are bit-identical.
+
+As an aside, `cmp` says the two tarballs' `bin/janet`,
+`libjanet.dylib`, `libMacportsLegacySupport.dylib`, `janet.h`, and
+man page are all bit-for-bit identical (`libjanet.a` differs only
+in `ar` archive timestamps).  Not surprising: both builds used
+`TIGER_ARCH=g3` (no `-mcpu`, generic-powerpc target), and both
+hosts run the same tigersh-prebuilt gcc-4.9.4 — so the compiler is
+asked to produce the same output and dutifully does.  Useful
+sanity check (confirms nothing host-specific leaks into the
+build); not a project property.
 
 ## Findings
 
-1. **The G3 tarball already covers G5 users.**  `bin/janet`,
-   `os/spawn`, PEG, fibers, marshal, `int/s64`, the whole stack
-   works.  The v0.2.1 curl one-liner from the project README runs
-   verbatim on pmacg5 and produces a working `/opt/janet-1.41.3-dev/`.
+The actual novel finding is narrow:
 
-2. **No G5 bootstrap workaround is needed.**  Janet 1.41.3-dev
-   builds natively on G5 with our pipeline.  The leopard.sh
-   1.27.0-era Bus error does not reproduce — either it was fixed
-   upstream between Janet 1.27.0 and 1.41.3-dev, or it was specific
-   to a different toolchain combination (different gcc / different
-   `ld64` / different `mlsupport` than what we use).  Either way,
-   the "build a bootstrap janet on G3, scp it to G5" plan from the
-   roadmap is unnecessary.
+1. **Building Janet on G5 doesn't crash.**  The roadmap had carried
+   a "needs bootstrap-on-G3 workaround" caveat since session 001,
+   based on leopard.sh 1.27.0's `build/janet tools/patch-header.janet
+   → Bus error` on G5.  That caveat no longer applies to our pinned
+   SHA (1.41.3-dev) + toolchain (gcc-4.9.4 + ld64-97.17-tigerbrew).
+   Either upstream fixed the underlying bug between 1.27.0 and our
+   SHA, or it was specific to a toolchain combination we don't use.
+   Either way: G5 native builds Just Work, no workaround needed.
+   Roadmap item 11 closes by verification.
 
-3. **G3-built and G5-built binaries are bit-identical** with our
-   toolchain *for the default-tuning (`TIGER_ARCH=g3`, no
-   `-mcpu`) build* — same compiler + same mlsupport + same source
-   + same (absence of) flags → same output bytes.  Useful invariant
-   for build reproducibility.  Note: this does *not* extend to
-   `TIGER_ARCH=g4` / `g4-altivec` builds, where `-mcpu=7450`
-   intentionally changes codegen (cpu-subtype flip + scheduling
-   tweaks).
+Things confirmed-but-not-novel along the way:
 
-4. **G5 is ~1.93× faster than the 1.42 GHz G4** on the same Janet
-   binary (~19% IPC win on top of the 1.62× clock-speed ratio).
+- v0.2.1 G3 tarball runs on G5 (expected from PPC ISA forward-compat;
+  worth verifying once, but no surprise).
+- G3-built and G5-built binaries are bit-identical for the default
+  no-`-mcpu` build (expected from "same gcc + same flags = same
+  bytes"; useful sanity check that nothing host-fingerprint-y leaks
+  into the build).
+- G5 is faster than G4 (known a priori; nice to have the bench
+  numbers for future ppc64 comparisons — 1.701 s G5 vs 3.288 s G4
+  on the same binary, ~1.93× including IPC + clock).
 
-5. **No new release this session.**  Item 11 closed by verification,
-   not by a new artifact.  v0.2.1 G3 tarball remains the recommended
-   download for all PPC Macs (G3, G4, G5).  Same precedent as M2 /
-   session 009: we don't ship variant tarballs unless they offer
-   something measurably different from what we already publish.
+**No new release this session.**  Item 11 closed by verification,
+not by a new artifact.  v0.2.1 G3 tarball remains the recommended
+download for all PPC Macs (G3, G4, G5).  Same precedent as M2 /
+session 009.
 
-6. **Item 12 (ppc64) is now the substantive M3 work.**  The bitness
-   source dive
-   ([`ppc64-value-representation.md`](ppc64-value-representation.md))
-   established that the real ppc64 win for Janet requires patching
-   the upstream `JANET_NANBOX_64` auto-detect at `janet.h:313` to
-   include `__PPC64__`.  Without that patch a ppc64 build would
-   silently fall back to the 32-bit nanbox and forfeit the
-   inner-loop win.  Roadmap item 12 re-written to include this as
-   a fourth bullet alongside toolchain plumbing, mlsupport-ppc64,
-   and benchmarking.
+Separately, the pre-work source dive on Janet's value representation
+([`ppc64-value-representation.md`](ppc64-value-representation.md))
+expanded the scope of *item 12* (ppc64, M3's remaining work) to
+include a small upstream `JANET_NANBOX_64` patch: upstream's
+auto-detect at `janet.h:313` doesn't list `__PPC64__`, so without a
+patch a ppc64 build would silently fall back to the 32-bit nanbox
+and forfeit the inner-loop win.  Roadmap item 12 rewritten to
+include this alongside toolchain plumbing, ppc64 mlsupport, and
+benchmarking.
 
 ## Status on exit
 
-M3 item 11 closed by verification (no new artifact).  Project
-status unchanged user-side: v0.2.1 G3 tarball remains the
-recommended download — but now empirically verified on the full
-G3/G4/G5 spread (G3 verified in session 007 on ibookg37; G4 in
-session 009 on emac/pbookg42/mdd; G5 in this session on pmacg5).
-The implementation-status table in the project README gets a row
-flipped from "❌ M3" to "✅ M3 (userland)" for G5, with item 12
-(ppc64) staying ❌ until that engineering work lands.
+M3 item 11 closed by verification: the "needs G5 bootstrap
+workaround" caveat the roadmap had carried since session 001 is
+stale.  G5 native builds work; no workaround needed.  No new
+release artifact (v0.2.1 G3 tarball still the canonical download).
+The implementation-status table in the project README flips the
+G5 Tiger row from "❌ M3" to "✅ M3 (userland + build)"; item 12
+(ppc64) stays ❌ until that engineering work lands.
 
 Roadmap item 12 scope expanded to include the `JANET_NANBOX_64`
 upstream patch as the centerpiece of the perf story for ppc64.
-That, plus the toolchain plumbing for `-arch ppc64`, plus a
-ppc64 mlsupport build, is the work to do whenever M3 is resumed.
+That, plus toolchain plumbing for `-arch ppc64`, plus a ppc64
+mlsupport build, is the work to do whenever M3 is resumed.

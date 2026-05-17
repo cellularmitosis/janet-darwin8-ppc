@@ -173,23 +173,18 @@ remains the recommended download for G3/G4/G5 alike.
 
 ## M3 — G5 / 64-bit
 
-11. **✅ G5 userland + native build verified, no workaround needed.**
-    *(session 010)*  v0.2.1 G3 tarball runs unmodified on pmacg5
-    (PowerMac G5 970, 2.3 GHz, Tiger 10.4.11) — full smoke
-    including `os/spawn`, PEG, fibers, marshal, `int/s64`.  Native
-    build pipeline also runs end-to-end on pmacg5 with
-    `TIGER_HOST=pmacg5 scripts/build-tiger.sh`; the leopard.sh
-    1.27.0-era "build/janet tools/patch-header.janet → Bus error"
-    does not reproduce on our pinned SHA (1.41.3-dev) + toolchain
-    (gcc-4.9.4 + ld64-97.17-tigerbrew).  For the default
-    `TIGER_ARCH=g3` (no-`-mcpu`, generic-powerpc) build, G3-built
-    and G5-built binaries are byte-identical (`bin/janet`,
-    `libjanet.dylib`, `libMacportsLegacySupport.dylib`,
-    `include/janet.h` all match bit-for-bit; `libjanet.a` differs
-    only in `ar` archive timestamps) — same gcc-4.9.4 prebuilt on
-    both hosts emits the same code with no `-mcpu` override.  This
-    invariant does *not* extend to `TIGER_ARCH=g4` / `g4-altivec`
-    builds.  No new release artifact this session — v0.2.1 G3
+11. **✅ G5 native build works; no workaround needed.**  *(session
+    010)*  The "needs-bootstrap-on-G3 workaround" caveat this item
+    carried — from leopard.sh 1.27.0's `build/janet
+    tools/patch-header.janet → Bus error` on G5 — does not
+    reproduce on our pinned SHA (1.41.3-dev) + toolchain (gcc-4.9.4
+    + ld64-97.17-tigerbrew).  `TIGER_HOST=pmacg5
+    scripts/build-tiger.sh` runs end-to-end and produces a working
+    tarball; v0.2.1 G3 tarball also runs cleanly on pmacg5
+    (expected from PPC forward-compat).  Bench: 1.701 s total
+    best-of-5 on pmacg5, ~1.93× faster than 1.42 GHz G4.  No new
+    release artifact.  See
+    [`sessions/010-m3-g5-bootstrap/`](sessions/010-m3-g5-bootstrap/).  No new release artifact this session — v0.2.1 G3
     tarball remains the canonical download for G3/G4/G5 alike.
     Bench on pmacg5: 1.701 s total best-of-5, **~1.93× faster
     than the 1.42 GHz G4** on the same workload, ~19% IPC win on

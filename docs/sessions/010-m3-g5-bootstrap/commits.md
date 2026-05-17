@@ -16,7 +16,8 @@ Outer repo (this project), in chronological order.
 
   [`README.md`](../../../README.md): G5 Tiger row flipped from
   ❌ M3 to ✅ M3 (userland + build) with bench numbers and the
-  byte-identical-binaries finding inline.  ppc64 row still ❌ but
+  byte-identical-binaries finding inline (with the
+  `TIGER_ARCH=g3`/no-`-mcpu` precondition called out).  ppc64 row still ❌ but
   with re-scoped notes pointing at the `JANET_NANBOX_64`
   auto-detect gap.  G3 row note updated to reflect that G3-built
   tarballs have now been verified on G3/G4/G5 across sessions

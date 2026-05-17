@@ -168,8 +168,32 @@ Extracted both tarballs and compared the install trees:
 | `lib/libjanet.a` | differs *only* in `ar` archive timestamps; the embedded `janet.o`, `shell.o`, and `__.SYMDEF SORTED` blobs are byte-identical |
 
 **Janet's build is bit-deterministic across G3 and G5 build hosts**
-with our toolchain.  Same gcc-4.9.4 + same Janet source + same
-mlsupport headers = same binary, modulo `ar` timestamps.
+with our toolchain — *given identical compile flags*.  Same
+gcc-4.9.4 + same Janet source + same mlsupport headers + same
+flags = same binary, modulo `ar` timestamps.
+
+The "identical flags" precondition is the load-bearing part of
+that claim.  Both builds were run with `TIGER_ARCH=g3` (the
+default), which sets `CFLAGS_EXTRA=""` — i.e., **no `-mcpu` flag
+at all**.  Both invocations of gcc-4.9.4 therefore use the
+compiler's built-in default target ("generic powerpc": only
+`__POWERPC__` defined, no `__CPU_POWERPC_750__` / `_970__` /
+`__ALTIVEC__`), independent of whether the gcc binary itself
+happens to be running on a G3 or a G5.
+
+Verified that both build hosts have **identically-configured
+gcc-4.9.4** binaries (same tigersh prebuilt; `gcc-4.9 -v` shows
+the same `Configured with:` string on both, and `gcc-4.9 -E -dM
+-x c /dev/null` shows the same set of predefined macros).
+
+A `TIGER_ARCH=g4` build on pmacg5 (passing `-mcpu=7450`) would
+**not** be byte-identical to an ibookg38 `TIGER_ARCH=g3` build —
+session 009 already demonstrated that `-mcpu=7450` alone flips
+the Mach-O cpu-subtype and changes scheduling-sensitive codegen.
+The bit-identicality finding here is specifically about the
+*default-tuning* build, where gcc is asked to emit generic
+powerpc code and produces the same bytes regardless of which
+PowerPC chip the build happens on.
 
 ### Item 11.e: bench G5-built tarball on G5
 
@@ -196,8 +220,13 @@ the binaries are bit-identical.
    roadmap is unnecessary.
 
 3. **G3-built and G5-built binaries are bit-identical** with our
-   toolchain — same compiler, same mlsupport, same source → same
-   output bytes.  Useful invariant for build reproducibility.
+   toolchain *for the default-tuning (`TIGER_ARCH=g3`, no
+   `-mcpu`) build* — same compiler + same mlsupport + same source
+   + same (absence of) flags → same output bytes.  Useful invariant
+   for build reproducibility.  Note: this does *not* extend to
+   `TIGER_ARCH=g4` / `g4-altivec` builds, where `-mcpu=7450`
+   intentionally changes codegen (cpu-subtype flip + scheduling
+   tweaks).
 
 4. **G5 is ~1.93× faster than the 1.42 GHz G4** on the same Janet
    binary (~19% IPC win on top of the 1.62× clock-speed ratio).

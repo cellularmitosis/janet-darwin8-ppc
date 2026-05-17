@@ -181,11 +181,15 @@ remains the recommended download for G3/G4/G5 alike.
     `TIGER_HOST=pmacg5 scripts/build-tiger.sh`; the leopard.sh
     1.27.0-era "build/janet tools/patch-header.janet → Bus error"
     does not reproduce on our pinned SHA (1.41.3-dev) + toolchain
-    (gcc-4.9.4 + ld64-97.17-tigerbrew).  G3-built and G5-built
-    binaries are byte-identical (`bin/janet`, `libjanet.dylib`,
-    `libMacportsLegacySupport.dylib`, `include/janet.h` all match
-    bit-for-bit; `libjanet.a` differs only in `ar` archive
-    timestamps).  No new release artifact this session — v0.2.1 G3
+    (gcc-4.9.4 + ld64-97.17-tigerbrew).  For the default
+    `TIGER_ARCH=g3` (no-`-mcpu`, generic-powerpc) build, G3-built
+    and G5-built binaries are byte-identical (`bin/janet`,
+    `libjanet.dylib`, `libMacportsLegacySupport.dylib`,
+    `include/janet.h` all match bit-for-bit; `libjanet.a` differs
+    only in `ar` archive timestamps) — same gcc-4.9.4 prebuilt on
+    both hosts emits the same code with no `-mcpu` override.  This
+    invariant does *not* extend to `TIGER_ARCH=g4` / `g4-altivec`
+    builds.  No new release artifact this session — v0.2.1 G3
     tarball remains the canonical download for G3/G4/G5 alike.
     Bench on pmacg5: 1.701 s total best-of-5, **~1.93× faster
     than the 1.42 GHz G4** on the same workload, ~19% IPC win on

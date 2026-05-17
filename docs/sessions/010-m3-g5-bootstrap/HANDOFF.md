@@ -9,9 +9,14 @@ Build pipeline also runs end-to-end on G5; the leopard.sh
 1.27.0-era `tools/patch-header.janet` Bus error does not reproduce
 on our pinned SHA (1.41.3-dev) + toolchain (gcc-4.9.4 +
 ld64-97.17-tigerbrew).  G3-built and G5-built binaries are
-byte-identical (`bin/janet`, `libjanet.dylib`,
+byte-identical *for the `TIGER_ARCH=g3` (no `-mcpu`, generic
+powerpc) build* — `bin/janet`, `libjanet.dylib`,
 `libMacportsLegacySupport.dylib`, `janet.h` all bit-for-bit;
-`libjanet.a` differs only in `ar` archive timestamps).
+`libjanet.a` differs only in `ar` archive timestamps.  Both
+gcc-4.9.4 installs are the same tigersh prebuilt (same
+`Configured with:`, same default predefined macros), so with
+identical source + identical flags the compiler emits identical
+bytes regardless of which PowerPC chip it's running on.
 
 v0.2.1 G3 tarball remains the recommended download for **all PPC
 Macs** — now empirically verified on G3 (session 007 on ibookg37),
@@ -129,11 +134,18 @@ already set the table.
   by re-trying the 1.27.0-era workaround.
 
 - **Janet's build is bit-deterministic across G3/G5 build hosts
-  with our toolchain.**  Same gcc-4.9.4 + same Janet source + same
-  mlsupport headers = same `bin/janet`, `libjanet.dylib`,
-  `libMacportsLegacySupport.dylib`, `janet.h`.  Only `libjanet.a`
-  differs and only in `ar` archive timestamps.  Useful invariant to
-  trust: if a future build *isn't* bit-identical between hosts, that
+  with our toolchain — given identical flags.**  Same gcc-4.9.4 +
+  same Janet source + same mlsupport headers + same flags = same
+  `bin/janet`, `libjanet.dylib`, `libMacportsLegacySupport.dylib`,
+  `janet.h`.  Only `libjanet.a` differs and only in `ar` archive
+  timestamps.  **Important precondition:** both runs used
+  `TIGER_ARCH=g3` (default), which passes *no* `-mcpu` flag —
+  gcc-4.9.4 uses its default "generic powerpc" target and emits
+  identical code regardless of which chip the build host happens to
+  be.  This invariant does NOT hold for `TIGER_ARCH=g4` /
+  `g4-altivec` builds (where `-mcpu=7450` intentionally changes
+  codegen).  Useful guarantee in its narrow form: if a future
+  default-tuning build *isn't* bit-identical between hosts, that
   signal is worth chasing.
 
 - **`int/s64` is a Janet builtin — no `import` needed.**  Spent two
@@ -193,7 +205,8 @@ Session 010 closed M3 item 11 (G5 userland + native build): v0.2.1
 G3 tarball runs unmodified on pmacg5 (PowerMac G5 970), and the
 build pipeline also runs natively on G5 — leopard.sh 1.27.0-era
 Bus error does not reproduce on our pinned SHA + toolchain.
-G3-built and G5-built binaries are byte-identical.  No new release;
+G3-built and G5-built binaries are byte-identical (for the
+default `TIGER_ARCH=g3` no-`-mcpu` build).  No new release;
 v0.2.1 G3 tarball is still the canonical download for G3/G4/G5
 alike.  G5 is ~1.93× faster than 1.42 GHz G4 on the same Janet
 binary.

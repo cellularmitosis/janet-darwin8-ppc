@@ -173,14 +173,53 @@ remains the recommended download for G3/G4/G5 alike.
 
 ## M3 — G5 / 64-bit
 
-11. **G5 bootstrap workaround.**  The leopard.sh 1.27.0 recipe died
-    at `build/janet tools/patch-header.janet ... → Bus error` on G5.
-    Strategy: build a bootstrap janet on G3, scp it to G5, use it as
-    the host janet during the G5 build (sidesteps the bug).  Root-
-    cause if cheap; ship the workaround if not.
+11. **✅ G5 userland + native build verified, no workaround needed.**
+    *(session 010)*  v0.2.1 G3 tarball runs unmodified on pmacg5
+    (PowerMac G5 970, 2.3 GHz, Tiger 10.4.11) — full smoke
+    including `os/spawn`, PEG, fibers, marshal, `int/s64`.  Native
+    build pipeline also runs end-to-end on pmacg5 with
+    `TIGER_HOST=pmacg5 scripts/build-tiger.sh`; the leopard.sh
+    1.27.0-era "build/janet tools/patch-header.janet → Bus error"
+    does not reproduce on our pinned SHA (1.41.3-dev) + toolchain
+    (gcc-4.9.4 + ld64-97.17-tigerbrew).  G3-built and G5-built
+    binaries are byte-identical (`bin/janet`, `libjanet.dylib`,
+    `libMacportsLegacySupport.dylib`, `include/janet.h` all match
+    bit-for-bit; `libjanet.a` differs only in `ar` archive
+    timestamps).  No new release artifact this session — v0.2.1 G3
+    tarball remains the canonical download for G3/G4/G5 alike.
+    Bench on pmacg5: 1.701 s total best-of-5, **~1.93× faster
+    than the 1.42 GHz G4** on the same workload, ~19% IPC win on
+    top of the clock-speed ratio.  See
+    [`sessions/010-m3-g5-bootstrap/`](sessions/010-m3-g5-bootstrap/).
 
-12. **64-bit ppc64 build.**  Separate tarball:
-    `janet-X.Y.Z-tiger-g5-ppc64.tar.gz`.
+12. **64-bit ppc64 build, with `JANET_NANBOX_64` enabled.**  Separate
+    tarball: `janet-X.Y.Z-tiger-g5-ppc64.tar.gz`.  Scope expanded
+    after the session-010 source dive
+    ([`sessions/010-m3-g5-bootstrap/ppc64-value-representation.md`](sessions/010-m3-g5-bootstrap/ppc64-value-representation.md)):
+
+    - **Toolchain plumbing.**  `-arch ppc64` propagated through
+      Janet's build (`CFLAGS`/`LDFLAGS`, and decide what to do with
+      `BOOT_CFLAGS` — bootstrap can stay 32-bit since it only runs
+      on the build host).
+    - **macports-legacy-support for ppc64.**  Build the dylib with
+      `-arch ppc64`; bundle into the tarball under `@loader_path/`.
+    - **`JANET_NANBOX_64` patch.**  Upstream's auto-detection at
+      [`janet.h:313`](../external/janet/src/include/janet.h) lists
+      `__x86_64__`/`_WIN64`/`__riscv`/`__aarch64__`/`_M_ARM64` but
+      not `__PPC64__`.  Without intervention a ppc64 build falls
+      back to the 8-byte split-payload `JANET_NANBOX_32` layout,
+      forfeiting the single-register-per-value win.  Patch is ~5
+      lines and is upstreamable in shape (same as our merged PRs).
+      Verify the 47-bit-address-space invariant holds for Tiger
+      ppc64 userland *first* — if it doesn't, fall back to the
+      pointer-shift variant (`JANET_NANBOX_64_POINTER_SHIFT`) used
+      by aarch64.
+    - **Benchmark vs the ppc32 tarball on the same G5 hardware.**
+      Same methodology as M2 / session 009.  Per the source dive,
+      expect modest single-digit-% interpreter wins plus a real
+      win on `int/s64`-heavy paths; no FP impact.  Ship the variant
+      only if the gain is measurable (M2 settled the precedent
+      that we don't ship no-op variants).
 
 ## Beyond M3
 

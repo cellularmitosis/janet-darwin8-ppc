@@ -1,0 +1,43 @@
+=== Janet on pmacg5 smoke ===
+--- env ---
+Darwin 8.11.0 Power Macintosh
+pmacg5
+
+--- otool -L ---
+/opt/janet-1.41.3-dev/bin/janet:
+	@loader_path/../lib/libMacportsLegacySupport.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 88.1.12)
+/opt/janet-1.41.3-dev/lib/libjanet.dylib:
+	@loader_path/libjanet.1.41.dylib (compatibility version 0.0.0, current version 0.0.0)
+	@loader_path/libMacportsLegacySupport.dylib (compatibility version 1.0.0, current version 1.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 88.1.12)
+
+--- file ---
+/opt/janet-1.41.3-dev/bin/janet: Mach-O executable ppc
+
+--- hello + version ---
+hello from janet on tiger ppc — macos
+version: 1.41.3-dev
+
+--- int/s64 ---
+sum:     18888888888887
+product: 1000000000000
+max u64: 18446744073709551615
+
+--- fiber ---
+1 2 3
+
+--- marshal ---
+equal? true
+
+--- PEG (using pp) ---
+@[]
+@["12345" "789"]
+
+--- os/spawn family ---
+hello-from-spawn
+Darwin 8.11.0 Power Macintosh
+got:piped-output
+
+
+=== smoke done ===

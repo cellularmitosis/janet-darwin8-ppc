@@ -1,0 +1,91 @@
+=== run-bench.sh ===
+    bin:    /opt/janet-1.41.3-dev/bin/janet
+    bench:  /Users/macuser/tmp/bench.janet
+    runs:   5
+    host:   Darwin 8.11.0 Power Macintosh  pmacg5
+
+--- run 1/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.822 s
+   (= 832040)
+  mandelbrot             0.410 s
+   (= 786476)
+  peg-match              0.208 s
+   (= 0)
+  marshal                0.283 s
+   (= 23040)
+
+  total:                 1.723 s
+
+--- run 2/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.814 s
+   (= 832040)
+  mandelbrot             0.412 s
+   (= 786476)
+  peg-match              0.207 s
+   (= 0)
+  marshal                0.282 s
+   (= 23040)
+
+  total:                 1.715 s
+
+--- run 3/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.812 s
+   (= 832040)
+  mandelbrot             0.415 s
+   (= 786476)
+  peg-match              0.207 s
+   (= 0)
+  marshal                0.283 s
+   (= 23040)
+
+  total:                 1.717 s
+
+--- run 4/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.811 s
+   (= 832040)
+  mandelbrot             0.411 s
+   (= 786476)
+  peg-match              0.207 s
+   (= 0)
+  marshal                0.283 s
+   (= 23040)
+
+  total:                 1.713 s
+
+--- run 5/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.810 s
+   (= 832040)
+  mandelbrot             0.415 s
+   (= 786476)
+  peg-match              0.207 s
+   (= 0)
+  marshal                0.286 s
+   (= 23040)
+
+  total:                 1.718 s
+

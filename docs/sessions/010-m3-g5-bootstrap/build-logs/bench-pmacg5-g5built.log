@@ -1,0 +1,91 @@
+=== run-bench.sh ===
+    bin:    /Users/macuser/tmp/janet-g5built/janet-1.41.3-dev/bin/janet
+    bench:  /Users/macuser/tmp/bench.janet
+    runs:   5
+    host:   Darwin 8.11.0 Power Macintosh  pmacg5
+
+--- run 1/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.789 s
+   (= 832040)
+  mandelbrot             0.408 s
+   (= 786476)
+  peg-match              0.207 s
+   (= 0)
+  marshal                0.278 s
+   (= 23040)
+
+  total:                 1.682 s
+
+--- run 2/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.792 s
+   (= 832040)
+  mandelbrot             0.412 s
+   (= 786476)
+  peg-match              0.207 s
+   (= 0)
+  marshal                0.281 s
+   (= 23040)
+
+  total:                 1.692 s
+
+--- run 3/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.793 s
+   (= 832040)
+  mandelbrot             0.413 s
+   (= 786476)
+  peg-match              0.207 s
+   (= 0)
+  marshal                0.278 s
+   (= 23040)
+
+  total:                 1.691 s
+
+--- run 4/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.794 s
+   (= 832040)
+  mandelbrot             0.412 s
+   (= 786476)
+  peg-match              0.207 s
+   (= 0)
+  marshal                0.279 s
+   (= 23040)
+
+  total:                 1.691 s
+
+--- run 5/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.793 s
+   (= 832040)
+  mandelbrot             0.413 s
+   (= 786476)
+  peg-match              0.206 s
+   (= 0)
+  marshal                0.277 s
+   (= 23040)
+
+  total:                 1.689 s
+

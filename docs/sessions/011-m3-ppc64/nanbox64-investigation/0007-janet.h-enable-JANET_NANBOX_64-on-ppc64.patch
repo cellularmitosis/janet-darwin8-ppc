@@ -1,0 +1,56 @@
+From f1cf2f05b76431998fdaa60cd6dcc3e3f2070399 Mon Sep 17 00:00:00 2001
+From: janet-darwin8-ppc <janet-darwin8-ppc@local>
+Date: Sun, 17 May 2026 13:14:27 -0500
+Subject: [PATCH 7/7] janet.h: enable JANET_NANBOX_64 on ppc64
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Upstream's auto-detection for JANET_NANBOX_64 lists x86_64, _WIN64,
+riscv, aarch64, and _M_ARM64 — but not ppc64.  Without intervention,
+a 64-bit ppc64 build of Janet falls back to the 8-byte split-payload
+JANET_NANBOX_32 layout, forfeiting the single-register-per-value win
+in the interpreter inner loop.
+
+Verified on Apple Tiger ppc64 userland (Mac OS X 10.4.11 on PowerPC
+970): all pointer types Janet actually NaN-boxes — heap allocations
+(any size up to 256 MB), function pointers in the main binary and
+in dyld-loaded dylibs (libSystem, libm, libMacportsLegacySupport),
+static .data / .bss / .rodata symbols, and mmap-anon regions — live
+below 2^31, comfortably within the 47-bit nanbox payload.  The high-
+bit stack (~bit 50 on Tiger ppc64) is never NaN-boxed by Janet, so
+its position above 47 bits doesn't matter.
+
+Linux ppc64 userland follows the same layout pattern (low text/data,
+heap grows up from the binary, large mappings come from mmap below
+the stack).  ppc64le on power7+ has explicit kernel guarantees about
+the address-space layout for similar reasons (CPython's tagged-pointer
+support uses the same assumption).
+---
+ src/include/janet.h | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/src/include/janet.h b/src/include/janet.h
+index eb356024..2fa53ef9 100644
+--- a/src/include/janet.h
++++ b/src/include/janet.h
+@@ -310,12 +310,16 @@ extern "C" {
+ #ifndef JANET_NO_NANBOX
+ #ifdef JANET_32
+ #define JANET_NANBOX_32
+-#elif defined(__x86_64__) || defined(_WIN64) || defined(__riscv) || defined(__aarch64__) || defined(_M_ARM64)
++#elif defined(__x86_64__) || defined(_WIN64) || defined(__riscv) || defined(__aarch64__) || defined(_M_ARM64) \
++    || defined(__ppc64__) || defined(__PPC64__)
+ /* We will only enable nanboxing by default on 64 bit systems
+- * for x64, risc-v, and arm64. This is mainly because the approach is tied to the
++ * for x64, risc-v, arm64, and ppc64. This is mainly because the approach is tied to the
+  * implicit 47 bit address space. Many arches allow/require this, but not all,
+  * and it requires cooperation from the OS. ARM should also work in many configurations by taking advantage
+- * of pointer alignment to allow for 48 or 49 bits of address space. */
++ * of pointer alignment to allow for 48 or 49 bits of address space.
++ * ppc64: Apple Tiger ppc64 userland keeps text, data, heap, and mmap regions
++ * below 2^31, well within 47 bits. Linux ppc64 userland is similar. The
++ * high-bit stack (around bit 50) is never NaN-boxed by Janet. */
+ #define JANET_NANBOX_64
+ 
+ /* Allow 64-bit nanboxing to assume aligned pointers to get back some extra bits for representation.

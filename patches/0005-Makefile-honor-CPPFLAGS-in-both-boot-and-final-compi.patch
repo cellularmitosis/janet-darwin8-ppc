@@ -1,4 +1,4 @@
-From d52915a40513cadf1d3ee04b2d05bc24c9dbd3d3 Mon Sep 17 00:00:00 2001
+From 11baed441a658f4d62563e3a585ef3b44e9b746e Mon Sep 17 00:00:00 2001
 From: janet-darwin8-ppc <janet-darwin8-ppc@local>
 Date: Fri, 15 May 2026 22:50:40 -0500
 Subject: [PATCH 5/6] Makefile: honor CPPFLAGS in both boot and final compile

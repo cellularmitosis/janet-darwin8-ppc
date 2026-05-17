@@ -24,8 +24,17 @@ On any G3, G4, or G5 Mac running Tiger:
 sudo mkdir -p /opt
 sudo chmod ugo+rwx /opt
 cd /opt
-curl http://leopard.sh/misc/beta/janet-1.41.3-dev-r3-tiger-g3.tar.gz | gunzip | tar x
+curl http://leopard.sh/misc/beta/janet-1.41.3-dev-r4-tiger-g3.tar.gz | gunzip | tar x
 /opt/janet-1.41.3-dev/bin/janet -e '(print "hello from janet on tiger ppc")'
+```
+
+On a G5 Mac running Tiger, the ppc64 variant is ~15% faster on a
+mixed Janet workload (mostly the FP win from G5's pipeline; some
+VM-dispatch win from native 64-bit registers).  Same install
+pattern:
+
+```
+curl http://leopard.sh/misc/beta/janet-1.41.3-dev-r4-tiger-g5-ppc64.tar.gz | gunzip | tar x
 ```
 
 For the M1.b acceptance demo — full `jpm install` pipeline →
@@ -37,40 +46,39 @@ round-trip): [`demos/v0.1.0-hello.{janet,sh}`](demos/).
 
 ## Status
 
-**M1.b released** ([v0.2.1](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.1)):
+**M3 ppc64 released** ([v0.2.2](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.2)):
 
-- [`janet-1.41.3-dev-r3-tiger-g3.tar.gz`](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/download/v0.2.1/janet-1.41.3-dev-r3-tiger-g3.tar.gz)
-  — curl-installable 1.7 MB tarball, **with `os/spawn` /
-  `os/execute` / `os/shell` working** via a fork+execve fallback
-  (Tiger has no `<spawn.h>` / `posix_spawn`).  **No `/opt`
-  prerequisites** — verified on ibookg37 with `/opt/gcc-4.9.4`
-  moved aside.
-- [`janet-1.41.3-dev-r3-tiger-g3-byo.tar.gz`](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/download/v0.2.1/janet-1.41.3-dev-r3-tiger-g3-byo.tar.gz)
-  — same binary but BYO macports-legacy-support (smaller, for
-  leopard.sh / source-builders with the dep already at
-  `/opt/macports-legacy-support-20221029/`).
-- `suite-os.janet` 59/60 on ibookg38 (the one fail is unrelated —
-  `os/realpath` Tiger semantics, see
-  [`docs/deferred.md`](docs/deferred.md)).  New `:cd` tests
-  (success + chdir-failure-via-errpipe) exercise the fork+execve
-  fallback's previously-untested code paths.
-- End-to-end gate: `jpm install
-  https://github.com/cellularmitosis/janet-lzo` succeeds on a
-  clean Tiger G3 box, builds the native module via gcc-4.9,
-  installs into `lib/janet/lzo.so`, and round-trips a 9 KB
-  payload through `(lzo/decompress (lzo/compress …))` — every
-  subprocess inside jpm rides on the fork+execve fallback.
-- Mirrored at `http://leopard.sh/misc/beta/janet-1.41.3-dev-r3-tiger-g3.tar.gz`
+- [`janet-1.41.3-dev-r4-tiger-g3.tar.gz`](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/download/v0.2.2/janet-1.41.3-dev-r4-tiger-g3.tar.gz)
+  — curl-installable 1.7 MB tarball.  Same Janet behavior as v0.2.1
+  (same patches, same SHA); rev'd to `r4` to keep all the tarballs
+  in this release consistent.  Runs on G3, G4, G5 Tiger.
+- [`janet-1.41.3-dev-r4-tiger-g3-byo.tar.gz`](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/download/v0.2.2/janet-1.41.3-dev-r4-tiger-g3-byo.tar.gz)
+  — same binary but BYO macports-legacy-support.
+- [`janet-1.41.3-dev-r4-tiger-g5-ppc64.tar.gz`](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/download/v0.2.2/janet-1.41.3-dev-r4-tiger-g5-ppc64.tar.gz)
+  — **NEW: native ppc64 build for G5 Tiger.**  ~15% faster than the
+  G3 tarball on the same G5 hardware (best-of-5 on imacg52: 1.66 s
+  total vs 1.95 s on a mixed fib / mandelbrot / PEG / marshal
+  workload).  Standalone (bundled mlsupport.ppc64); only runtime
+  dep is `/usr/lib/libgcc_s_ppc64.1.dylib`, which is stock Tiger.
+  Built with `JANET_NANBOX_64` *off* (upstream's no-nanbox
+  fallback) — the NANBOX_64 path on big-endian ppc64 has a real
+  upstream bug in array mutation; see
+  [session 011 writeup](docs/sessions/011-m3-ppc64/nanbox64-investigation/README.md).
+- Janet behavior unchanged from
+  [v0.2.1](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.1):
+  same patches, same upstream SHA, `os/spawn` / `os/execute` /
+  `os/shell` work via the fork+execve fallback,
+  `jpm install`-from-git works on a clean Tiger box.
+- Mirrored at `http://leopard.sh/misc/beta/janet-1.41.3-dev-r4-tiger-{g3,g5-ppc64}.tar.gz`
   for the curl-install one-liner.
 
-v0.2.1 is a bundling respin of [v0.2.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.0):
-identical Janet behavior, but with `-static-libgcc` so the binary no
-longer carries a runtime dependency on `/opt/gcc-4.9.4/lib/libgcc_s.1.dylib`
-(i.e. doesn't require tigersh's `gcc-libs-4.9.4` package installed
-on the target).  The earlier
+v0.2.2 adds the ppc64 variant.  v0.2.1 was a bundling respin of
+[v0.2.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.0)
+(added `-static-libgcc` so the binary no longer carries a runtime
+dependency on `/opt/gcc-4.9.4/lib/libgcc_s.1.dylib`).  The earlier
 [v0.1.0 (M1.a)](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.1.0)
 release shipped the pure-Janet REPL + native-module loader without
-subprocess support; v0.2.1 is the recommended download.
+subprocess support; v0.2.2 is the recommended download.
 
 ## Why
 
@@ -111,9 +119,9 @@ Legend: ✅ Working / 🟡 Partial or pinned / ❌ Missing.
 | G3 (PPC 750) Tiger | ibookg38 (build) / ibookg37 (test) | ✅ M1 (G3) | M1.b [released as v0.2.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.0) (session 007).  Bundled + BYO macports-legacy-support tarballs both verified on a clean ibookg37.  G3-built tarballs run on G4 (session 009) and G5 (session 010) too — PPC ISA is forward-compatible.  G4 + AltiVec is M2 (explored, no win); ppc64 is M3. |
 | G4 (PPC 7450) Tiger | emac (build) / pbookg42, mdd (test) | 🟡 M2 explored | `TIGER_ARCH=g4 scripts/build-tiger.sh` produces `-tiger-g4.tar.gz`.  Verified standalone on `mdd` (Leopard G4 MDD with no mlsupport at `/opt/macports-legacy-support-20221029` — `@loader_path` bundling carries the dylib).  Net gain over G3 tarball running on the same G4 hardware: **−0.2% on a mixed Janet benchmark** (mandelbrot −2.6%, fib +0.6%, peg +2.0%, marshal flat) — within noise.  Not shipped as a release variant; v0.2.1 G3 tarball remains the recommended download for G4 too.  See [session 009](docs/sessions/009-m2-g4-altivec/). |
 | G4 (PPC 7450) + AltiVec Tiger | emac (build) / pbookg42, mdd (test) | 🟡 M2 explored, no measurable win | `TIGER_ARCH=g4-altivec` adds `-maltivec -mabi=altivec -ftree-vectorize`.  Builds cleanly; runs cleanly on G4 Tiger + Leopard; **dyld-rejects on G3** (`incompatible cpu-subtype`).  gcc-4.9 auto-vectorization at `-O2 -ftree-vectorize` finds essentially nothing in Janet's scalar bytecode interpreter — performance indistinguishable from plain G4 tarball (within ±0.002 s on every workload).  Hand-rolled AltiVec source patches dropped as future work. |
-| G5 (PPC 970) Tiger | pmacg5 (PowerMac11,2, 2.3 GHz dual) | ✅ M3 (userland + build) | The "G5 needs a bootstrap-on-G3 workaround" caveat — inherited from leopard.sh 1.27.0's G5 Bus error — turned out to be stale on our pinned SHA + toolchain.  `TIGER_HOST=pmacg5 scripts/build-tiger.sh` runs end-to-end and produces a working tarball; v0.2.1 G3 tarball also runs cleanly on pmacg5 (expected from PPC forward-compat — full smoke including `os/spawn`, PEG, fibers, marshal, `int/s64`).  Bench: **1.701 s** total best-of-5 on pmacg5, **~1.93× faster than 1.42 GHz G4** on the same Janet binary.  See [session 010](docs/sessions/010-m3-g5-bootstrap/). |
+| G5 (PPC 970) Tiger | pmacg5 / imacg52 (build + test) | ✅ M3 (userland + build) | The "G5 needs a bootstrap-on-G3 workaround" caveat — inherited from leopard.sh 1.27.0's G5 Bus error — turned out to be stale on our pinned SHA + toolchain.  `TIGER_HOST=imacg52 scripts/build-tiger.sh` runs end-to-end and produces a working tarball; v0.2.1 G3 tarball also runs cleanly on G5 (expected from PPC forward-compat — full smoke including `os/spawn`, PEG, fibers, marshal, `int/s64`).  See [session 010](docs/sessions/010-m3-g5-bootstrap/) for the G5 bootstrap finding and [session 011](docs/sessions/011-m3-ppc64/) for the ppc64 variant. |
 | G4 Leopard | pbookg42, mdd | 🟡 Smoked | Tiger-built G4 tarballs run on Leopard 10.5.8 G4 too (forward-compat); not productized as a separate Leopard build.  Session 009 ran the smoke on `pbookg42` (PowerBook5,2) and `mdd` (PowerMac3,6 MDD). |
-| ppc64 Tiger | pmacg5 | ❌ M3 | 64-bit variant; separate tarball.  Scope expanded in [session 010](docs/sessions/010-m3-g5-bootstrap/ppc64-value-representation.md) to include a `JANET_NANBOX_64` upstream patch (auto-detect at [`janet.h:313`](external/janet/src/include/janet.h) doesn't list `__PPC64__`); without it, a ppc64 build would silently fall back to the 32-bit nanbox layout and forfeit the inner-loop win. |
+| ppc64 Tiger | imacg52 (build + test) | ✅ M3 | Native 64-bit build for G5 Tiger.  `TIGER_ARCH=g5-ppc64 scripts/build-tiger.sh` adds `-m64` through `CFLAGS`/`LDFLAGS` and bundles the ppc64 build of macports-legacy-support.  Released as `janet-1.41.3-dev-r4-tiger-g5-ppc64.tar.gz` ([v0.2.2](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.2), session 011).  Bench best-of-5 on imacg52 (G5 2.0 GHz): **1.66 s total vs 1.95 s ppc32** on the same hardware — ~15% faster (mandelbrot 34% faster, fib 12%, marshal 13%, peg 5% slower).  Built *without* `JANET_NANBOX_64` — that path has a real big-endian bug in upstream Janet (array `put` silently no-ops), parked for upstream in [session 011's writeup](docs/sessions/011-m3-ppc64/nanbox64-investigation/README.md).  Standalone (bundled mlsupport.ppc64); only stock-Tiger dep is `/usr/lib/libgcc_s_ppc64.1.dylib`. |
 
 ### Language & libraries
 
@@ -139,6 +147,7 @@ Legend: ✅ Working / 🟡 Partial or pinned / ❌ Missing.
 
 | Tag | Date | Notes |
 |---|---|---|
+| [v0.2.2](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.2) | 2026-05-17 | **M3 ppc64 release.**  Adds `janet-1.41.3-dev-r4-tiger-g5-ppc64.tar.gz` (1.7 MB), a native 64-bit build for G5 Tiger that runs ~15% faster than the G3 tarball on the same G5 hardware (mandelbrot benefits the most: 34% faster).  G3 bundled and BYO tarballs rev'd to `r4` for release consistency (Janet behavior unchanged from v0.2.1).  Build pipeline gains `TIGER_ARCH=g5-ppc64` + `LDFLAGS_EXTRA` knob.  Shipped *without* `JANET_NANBOX_64` after discovering a real big-endian bug in that path; parked in [session 011 writeup](docs/sessions/011-m3-ppc64/nanbox64-investigation/README.md).  See [session 011](docs/sessions/011-m3-ppc64/). |
 | [v0.2.1](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.1) | 2026-05-16 | **M1.b bundling respin.**  `janet-1.41.3-dev-r3-tiger-g3.tar.gz` (bundled) + `janet-1.41.3-dev-r3-tiger-g3-byo.tar.gz` (BYO).  Bundled tarball now built with `-static-libgcc`, dropping the runtime dep on `/opt/gcc-4.9.4/lib/libgcc_s.1.dylib` — `otool -L bin/janet` shows only `@loader_path/../lib/libMacportsLegacySupport.dylib` and `/usr/lib/libSystem.B.dylib`.  Verified standalone on ibookg37 with `/opt/gcc-4.9.4` moved aside.  Janet itself is byte-equivalent to v0.2.0 (same SHA, same patches except a test-only `:cd` addition).  BYO unchanged from v0.2.0. |
 | [v0.2.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.0) | 2026-05-16 | **M1.b release.**  `janet-1.41.3-dev-r2-tiger-g3.tar.gz` (bundled) + `janet-1.41.3-dev-r2-tiger-g3-byo.tar.gz` (BYO macports-legacy-support).  `os/spawn`/`os/execute`/`os/shell` working via the fork+execve fallback.  Acceptance gate: `jpm install janet-lzo` on a clean Tiger box.  Fallback patches landed session 006; release session 007.  *Bundled tarball requires tigersh's `gcc-libs-4.9.4` package installed at `/opt` — fixed in v0.2.1.* |
 | [v0.1.0](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.1.0) | 2026-05-16 | First M1.a release.  `janet-1.41.3-dev-tiger-g3.tar.gz` — pure-Janet REPL + native-module loader on Tiger G3.  No `os/spawn` (deferred to M1.b).  Built session 002, demo'd session 004, released session 005. |

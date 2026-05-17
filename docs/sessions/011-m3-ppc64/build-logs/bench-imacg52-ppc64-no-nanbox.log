@@ -1,0 +1,92 @@
+=========== PPC64 (no NANBOX, 16-byte struct values) ===========
+=== run-bench.sh ===
+    bin:    tmp/ppc64-noNanbox-install/janet-1.41.3-dev/bin/janet
+    bench:  tmp/bench.janet
+    runs:   5
+    host:   Darwin 8.11.0 Power Macintosh  imacg52
+
+--- run 1/5 ---
+Janet 1.41.3-dev local on macos/ppc64
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.791 s
+   (= 832040)
+  mandelbrot             0.312 s
+   (= 786476)
+  peg-match              0.250 s
+   (= 0)
+  marshal                0.324 s
+   (= 23040)
+
+  total:                 1.677 s
+
+--- run 2/5 ---
+Janet 1.41.3-dev local on macos/ppc64
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.792 s
+   (= 832040)
+  mandelbrot             0.317 s
+   (= 786476)
+  peg-match              0.251 s
+   (= 0)
+  marshal                0.327 s
+   (= 23040)
+
+  total:                 1.688 s
+
+--- run 3/5 ---
+Janet 1.41.3-dev local on macos/ppc64
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.795 s
+   (= 832040)
+  mandelbrot             0.309 s
+   (= 786476)
+  peg-match              0.250 s
+   (= 0)
+  marshal                0.326 s
+   (= 23040)
+
+  total:                 1.681 s
+
+--- run 4/5 ---
+Janet 1.41.3-dev local on macos/ppc64
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.792 s
+   (= 832040)
+  mandelbrot             0.311 s
+   (= 786476)
+  peg-match              0.250 s
+   (= 0)
+  marshal                0.326 s
+   (= 23040)
+
+  total:                 1.680 s
+
+--- run 5/5 ---
+Janet 1.41.3-dev local on macos/ppc64
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.792 s
+   (= 832040)
+  mandelbrot             0.310 s
+   (= 786476)
+  peg-match              0.250 s
+   (= 0)
+  marshal                0.324 s
+   (= 23040)
+
+  total:                 1.675 s
+

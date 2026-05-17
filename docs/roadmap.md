@@ -191,34 +191,48 @@ remains the recommended download for G3/G4/G5 alike.
     top of the clock-speed ratio.  See
     [`sessions/010-m3-g5-bootstrap/`](sessions/010-m3-g5-bootstrap/).
 
-12. **64-bit ppc64 build, with `JANET_NANBOX_64` enabled.**  Separate
-    tarball: `janet-X.Y.Z-tiger-g5-ppc64.tar.gz`.  Scope expanded
-    after the session-010 source dive
-    ([`sessions/010-m3-g5-bootstrap/ppc64-value-representation.md`](sessions/010-m3-g5-bootstrap/ppc64-value-representation.md)):
+12. **✅ 64-bit ppc64 build.** *(session 011 — [v0.2.2](https://github.com/cellularmitosis/janet-darwin8-ppc/releases/tag/v0.2.2))*  Shipped as
+    `janet-1.41.3-dev-r4-tiger-g5-ppc64.tar.gz`.  Built **without**
+    `JANET_NANBOX_64` after discovering a real big-endian bug in that
+    path; the no-nanbox 16-byte-struct fallback is the canonical
+    layout for ppc64.
 
-    - **Toolchain plumbing.**  `-arch ppc64` propagated through
-      Janet's build (`CFLAGS`/`LDFLAGS`, and decide what to do with
-      `BOOT_CFLAGS` — bootstrap can stay 32-bit since it only runs
-      on the build host).
-    - **macports-legacy-support for ppc64.**  Build the dylib with
-      `-arch ppc64`; bundle into the tarball under `@loader_path/`.
-    - **`JANET_NANBOX_64` patch.**  Upstream's auto-detection at
-      [`janet.h:313`](../external/janet/src/include/janet.h) lists
-      `__x86_64__`/`_WIN64`/`__riscv`/`__aarch64__`/`_M_ARM64` but
-      not `__PPC64__`.  Without intervention a ppc64 build falls
-      back to the 8-byte split-payload `JANET_NANBOX_32` layout,
-      forfeiting the single-register-per-value win.  Patch is ~5
-      lines and is upstreamable in shape (same as our merged PRs).
-      Verify the 47-bit-address-space invariant holds for Tiger
-      ppc64 userland *first* — if it doesn't, fall back to the
-      pointer-shift variant (`JANET_NANBOX_64_POINTER_SHIFT`) used
-      by aarch64.
-    - **Benchmark vs the ppc32 tarball on the same G5 hardware.**
-      Same methodology as M2 / session 009.  Per the source dive,
-      expect modest single-digit-% interpreter wins plus a real
-      win on `int/s64`-heavy paths; no FP impact.  Ship the variant
-      only if the gain is measurable (M2 settled the precedent
-      that we don't ship no-op variants).
+    - **Toolchain plumbing** landed: `TIGER_ARCH=g5-ppc64` adds
+      `-m64` to both `CFLAGS` and `LDFLAGS` (separate `LDFLAGS_EXTRA`
+      knob — `-m64` must reach the link step, and Janet's Makefile
+      doesn't propagate `CFLAGS` to `LDFLAGS`).  `BOOT_CFLAGS` stays
+      32-bit since `janet_boot` only runs on the build host; the
+      G5 runs both 32-bit and 64-bit natively, so no bootstrap
+      gymnastics needed.
+    - **macports-legacy-support.ppc64** is a precanned tigersh
+      package (`tiger.sh macports-legacy-support-20221029.ppc64`);
+      `build-tiger.sh` auto-picks it when `TIGER_ARCH=g5-ppc64`.
+      Bundled into the tarball under `@loader_path/` exactly the
+      same way as the ppc32 variant.  Runtime requirement is
+      stock-Tiger `/usr/lib/libgcc_s_ppc64.1.dylib`.
+    - **47-bit address-space invariant verified** on Tiger ppc64
+      userland — see
+      [`sessions/011-m3-ppc64/probe-address-space-v2.c`](sessions/011-m3-ppc64/probe-address-space-v2.c)
+      + log.  Everything Janet would NaN-box (heap, code, static
+      data, mmap) lives below bit 31; only stack pointers reach
+      bit 50, and Janet doesn't wrap stack pointers.
+    - **`JANET_NANBOX_64` patch parked**, not shipped.  The patch
+      builds cleanly and passes basic eval, but `(put arr i V)`
+      silently no-ops on arrays — a real big-endian Janet bug
+      we're the first to hit (since x86_64, aarch64, RISC-V are
+      all little-endian).  Top-level `(var x V)` is broken as a
+      consequence (it's implemented via put on a 1-element array).
+      Full writeup +  parked patch in
+      [`sessions/011-m3-ppc64/nanbox64-investigation/`](sessions/011-m3-ppc64/nanbox64-investigation/).
+      Slated as a future upstream contribution.
+    - **Benchmark on imacg52 (G5 2.0 GHz):** ppc64 tarball is
+      ~15% faster than the G3 tarball on the same hardware
+      (best-of-5 total 1.656 s vs 1.951 s).  Mandelbrot gains the
+      most (34% faster); fib 12%; marshal 13%; peg-match is 5%
+      slower.  The FP and VM-dispatch wins materially outweigh
+      the loss of the NANBOX_64 inner-loop optimization, so the
+      release is honest even with that path off.  Methodology
+      mirrors M2 / session 009.
 
 ## Beyond M3
 

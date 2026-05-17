@@ -1,0 +1,33 @@
+checking pointers Janet would actually NaN-box:
+  &main                                  0x2658  high17=0x00000 ok
+  &dummy_function                        0x2620  high17=0x00000 ok
+  &printf (libc)                         0x8a0900  high17=0x00000 ok
+  &malloc (libc)                         0x8f7470  high17=0x00000 ok
+  &free  (libc)                          0x8f8484  high17=0x00000 ok
+  &exit  (libc)                          0x895abc  high17=0x00000 ok
+  &pthread_self                          0x8f9d18  high17=0x00000 ok
+  &dlopen                                0x975e54  high17=0x00000 ok
+  &pow   (libm)                          0x94da10  high17=0x00000 ok
+  &sqrt  (libm)                          0x951df0  high17=0x00000 ok
+  "hello" literal                        0x2c80  high17=0x00000 ok
+  dummy_string (.rodata)                 0x2ff8  high17=0x00000 ok
+  &s_int (.data)                         0x30c8  high17=0x00000 ok
+  &s_bss_int (.bss)                      0x30d0  high17=0x00000 ok
+  &stdout (libc)                         0x9c5328  high17=0x00000 ok
+  malloc(1)                              0xc00400  high17=0x00000 ok
+  malloc(15)                             0xc00420  high17=0x00000 ok
+  malloc(16)                             0xc00440  high17=0x00000 ok
+  malloc(63)                             0xc00460  high17=0x00000 ok
+  malloc(64)                             0xc004a0  high17=0x00000 ok
+  malloc(4096)                           0x5002800  high17=0x00000 ok
+  malloc(64*1024)                        0x66000  high17=0x00000 ok
+  malloc(1<<20)                          0x76000  high17=0x00000 ok
+  malloc(1<<24)                          0x6008000  high17=0x00000 ok
+  malloc(1<<26)                          0x7008000  high17=0x00000 ok
+heap stress (allocate 1 MB blocks until 256 MB or failure):
+  allocated 256 MB; highest heap address: 0x18e08000 (high17=0x00000)
+
+PASS: every Janet-wrappable pointer fits in 47 bits.
+Tiger ppc64 userland is compatible with JANET_NANBOX_64 at
+the default shift=0.  Janet doesn't wrap stack pointers,
+so the high stack at bit 50 is irrelevant.

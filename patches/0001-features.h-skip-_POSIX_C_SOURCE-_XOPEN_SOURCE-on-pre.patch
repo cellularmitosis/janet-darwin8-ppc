@@ -1,4 +1,4 @@
-From 983cd1c97d8a8cd6302e80dd08daeb882ca5cbfb Mon Sep 17 00:00:00 2001
+From f9d246b36433034f8681d1058c2051c2ed20f6d6 Mon Sep 17 00:00:00 2001
 From: janet-darwin8-ppc <janet-darwin8-ppc@local>
 Date: Fri, 15 May 2026 22:32:33 -0500
 Subject: [PATCH 1/6] features.h: skip _POSIX_C_SOURCE / _XOPEN_SOURCE on

@@ -1,4 +1,4 @@
-From 9e45bf97135b8fa602fb976f6bb95fc3e06ab4de Mon Sep 17 00:00:00 2001
+From 87f6b2233c3d1ebed596697475f41061a3c40c75 Mon Sep 17 00:00:00 2001
 From: janet-darwin8-ppc <janet-darwin8-ppc@local>
 Date: Sat, 16 May 2026 02:27:33 -0500
 Subject: [PATCH 6/6] test/suite-os: add tests for os/execute :cd argument

@@ -37,8 +37,13 @@ cd "$REPO_ROOT"
 # Extra C flags appended to "-O2 -g".  Default empty (G3 build, no
 # tuning beyond gcc's PPC defaults).  M2 G4 builds set
 # CFLAGS_EXTRA="-mcpu=7450" (and "-mcpu=7450 -maltivec -mabi=altivec"
-# for the AltiVec variant); see TIGER_ARCH presets below.
+# for the AltiVec variant); M3 ppc64 builds set CFLAGS_EXTRA="-m64";
+# see TIGER_ARCH presets below.
 : "${CFLAGS_EXTRA:=}"
+# Extra LD flags appended to the link line (separate from CFLAGS_EXTRA
+# because -m64 must reach both the compile AND the link step, and
+# CFLAGS doesn't propagate through Janet's Makefile to LDFLAGS).
+: "${LDFLAGS_EXTRA:=}"
 # Optional project-level revision marker appended to the tarball
 # basename (NOT to PREFIX or the binary's janet/version, since both
 # of those still want to match upstream).  Use when we cut a second
@@ -47,9 +52,11 @@ cd "$REPO_ROOT"
 #   janet-1.41.3-dev-r2-tiger-g3.tar.gz
 : "${RELEASE_REV:=}"
 
-# TIGER_ARCH presets: G3 (default, no tuning), G4 (-mcpu=7450), and
-# G4 + AltiVec.  An explicit CFLAGS_EXTRA from the caller wins, so
-# we only fill in the preset when the caller left it empty.
+# TIGER_ARCH presets: G3 (default, no tuning), G4 (-mcpu=7450),
+# G4 + AltiVec, and g5-ppc64.  An explicit CFLAGS_EXTRA from the
+# caller wins, so we only fill in the preset when the caller left
+# it empty.  Same for LDFLAGS_EXTRA, which only ppc64 currently
+# needs (so -m64 reaches the link step too).
 if [ -z "$CFLAGS_EXTRA" ]; then
     case "$TIGER_ARCH" in
         g3)         CFLAGS_EXTRA="" ;;
@@ -63,8 +70,31 @@ if [ -z "$CFLAGS_EXTRA" ]; then
         # "AltiVec compiler flags only" benchmark vs. the plain G4
         # build.
         g4-altivec) CFLAGS_EXTRA="-mcpu=7450 -maltivec -mabi=altivec -ftree-vectorize" ;;
+        # ppc64 preset: -m64 in both CFLAGS and LDFLAGS so the final
+        # bin/janet + libjanet.dylib are ppc64.  No -mcpu (970 is the
+        # only ppc64 chip in the fleet; default tuning is fine).
+        # BOOT_CFLAGS in Janet's Makefile doesn't pull from $CFLAGS,
+        # so janet_boot stays 32-bit and runs natively on the build
+        # host — the bootstrap phase needs no special handling.
+        g5-ppc64)   CFLAGS_EXTRA="-m64" ;;
         *) ;; # unknown arch — leave CFLAGS_EXTRA empty, caller knows what they're doing
     esac
+fi
+if [ -z "$LDFLAGS_EXTRA" ]; then
+    case "$TIGER_ARCH" in
+        g5-ppc64)   LDFLAGS_EXTRA="-m64" ;;
+        *) ;;
+    esac
+fi
+
+# macports-legacy-support comes in ppc32 and ppc64 flavors as separate
+# tigersh packages.  Auto-pick the ppc64 variant for the ppc64 arch
+# unless the caller explicitly set LEGACY_SUPPORT_PREFIX.  The default
+# defined above is the ppc32 path; only override when it's still that
+# default.
+if [ "$LEGACY_SUPPORT_PREFIX" = "/opt/macports-legacy-support-20221029" ] \
+   && [ "$TIGER_ARCH" = "g5-ppc64" ]; then
+    LEGACY_SUPPORT_PREFIX="/opt/macports-legacy-support-20221029.ppc64"
 fi
 
 # Janet version comes from upstream's janetconf.h after patches apply.
@@ -94,6 +124,7 @@ echo "=== build-tiger.sh ==="
 echo "    host:        $TIGER_HOST"
 echo "    arch:        $TIGER_ARCH"
 echo "    cflags+:     ${CFLAGS_EXTRA:-(none)}"
+echo "    ldflags+:    ${LDFLAGS_EXTRA:-(none)}"
 echo "    janet ver:   $JANET_VERSION"
 echo "    prefix:      $PREFIX"
 echo "    tarball:     $TARBALL"
@@ -122,6 +153,7 @@ ssh "$TIGER_HOST" \
      LEGACY_SUPPORT_PREFIX='$LEGACY_SUPPORT_PREFIX' \
      BYO_MACPORTS_LEGACY='$BYO_MACPORTS_LEGACY' \
      CFLAGS_EXTRA='$CFLAGS_EXTRA' \
+     LDFLAGS_EXTRA='$LDFLAGS_EXTRA' \
      REMOTE_DIR='$REMOTE_DIR' \
      '$REMOTE_DIR/build-tiger-remote.sh'"
 

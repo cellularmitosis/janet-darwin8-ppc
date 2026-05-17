@@ -1,4 +1,4 @@
-From b5514c1b8e2d2b25c78ad98b266da9ad5e232ed3 Mon Sep 17 00:00:00 2001
+From d1eaeb9a7a2300817b20648a0ae2342c02e46f19 Mon Sep 17 00:00:00 2001
 From: Jason Pepas <jasonpepas@gmail.com>
 Date: Sat, 16 May 2026 00:48:57 -0500
 Subject: [PATCH 4/6] features.h: auto-define JANET_NO_POSIX_SPAWN on

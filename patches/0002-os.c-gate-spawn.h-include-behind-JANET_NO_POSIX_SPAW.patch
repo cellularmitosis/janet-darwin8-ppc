@@ -1,4 +1,4 @@
-From 0233b0409fd15c174961349ea881d89411c1dbd7 Mon Sep 17 00:00:00 2001
+From 49b1af5cdbc5fc8cd384010e73b614a7713e3f25 Mon Sep 17 00:00:00 2001
 From: Jason Pepas <jasonpepas@gmail.com>
 Date: Sat, 16 May 2026 00:46:19 -0500
 Subject: [PATCH 2/6] os.c: gate <spawn.h> include behind JANET_NO_POSIX_SPAWN

@@ -19,7 +19,8 @@
 #   CFLAGS_EXTRA            — optional extra C flags appended to the
 #                             default "-O2 -g".  Used for the M2 G4
 #                             tarballs (e.g. "-mcpu=7450" or
-#                             "-mcpu=7450 -maltivec -mabi=altivec").
+#                             "-mcpu=7450 -maltivec -mabi=altivec")
+#                             and the M3 ppc64 tarball ("-m64").
 #                             Only affects the final BUILD_CFLAGS in
 #                             Janet's Makefile (bin/janet +
 #                             libjanet.dylib + native modules).  The
@@ -28,7 +29,19 @@
 #                             CFLAGS, so it stays generic-PPC even
 #                             under a -mcpu=7450 build — that's fine
 #                             because janet_boot only runs on the
-#                             build host during the build.
+#                             build host during the build.  Same
+#                             principle for ppc64: janet_boot is
+#                             built ppc32 and runs natively on the
+#                             G5 build host; only the final binary +
+#                             dylib are ppc64.
+#   LDFLAGS_EXTRA           — optional extra LD flags appended to the
+#                             link line.  Separate from CFLAGS_EXTRA
+#                             because CFLAGS doesn't propagate through
+#                             Janet's Makefile to LDFLAGS, and -m64
+#                             must reach the link step (otherwise the
+#                             linker emits a ppc32 object even though
+#                             every .o is ppc64).  M3 ppc64 sets this
+#                             to "-m64".
 #   REMOTE_DIR              — absolute or $HOME-relative path containing
 #                             the rsync'd janet source.  cwd on entry.
 #
@@ -46,6 +59,7 @@ set -e -o pipefail
 : "${REMOTE_DIR:?REMOTE_DIR must be set}"
 : "${BYO_MACPORTS_LEGACY:=}"
 : "${CFLAGS_EXTRA:=}"
+: "${LDFLAGS_EXTRA:=}"
 
 SRC_DIR="$HOME/$REMOTE_DIR"
 STAGE_DIR="$HOME/tmp/janet-staging-$JANET_VERSION"
@@ -74,6 +88,9 @@ if [ -z "$BYO_MACPORTS_LEGACY" ]; then
     # /usr/lib/libgcc_s.1.dylib is still in the link for the ABI
     # baseline -- it's always present on Tiger.
     LDFLAGS_VAL="$LDFLAGS_VAL -static-libgcc"
+fi
+if [ -n "$LDFLAGS_EXTRA" ]; then
+    LDFLAGS_VAL="$LDFLAGS_VAL $LDFLAGS_EXTRA"
 fi
 export LDFLAGS="$LDFLAGS_VAL"
 

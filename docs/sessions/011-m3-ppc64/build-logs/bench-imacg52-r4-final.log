@@ -1,0 +1,185 @@
+=========== PPC32 r4 (G3) ===========
+=== run-bench.sh ===
+    bin:    tmp/ppc32-install/janet-1.41.3-dev/bin/janet
+    bench:  tmp/bench.janet
+    runs:   5
+    host:   Darwin 8.11.0 Power Macintosh  imacg52
+
+--- run 1/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.878 s
+   (= 832040)
+  mandelbrot             0.469 s
+   (= 786476)
+  peg-match              0.237 s
+   (= 0)
+  marshal                0.366 s
+   (= 23040)
+
+  total:                 1.951 s
+
+--- run 2/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.879 s
+   (= 832040)
+  mandelbrot             0.472 s
+   (= 786476)
+  peg-match              0.237 s
+   (= 0)
+  marshal                0.365 s
+   (= 23040)
+
+  total:                 1.953 s
+
+--- run 3/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.877 s
+   (= 832040)
+  mandelbrot             0.472 s
+   (= 786476)
+  peg-match              0.237 s
+   (= 0)
+  marshal                0.364 s
+   (= 23040)
+
+  total:                 1.951 s
+
+--- run 4/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.878 s
+   (= 832040)
+  mandelbrot             0.473 s
+   (= 786476)
+  peg-match              0.237 s
+   (= 0)
+  marshal                0.365 s
+   (= 23040)
+
+  total:                 1.953 s
+
+--- run 5/5 ---
+Janet 1.41.3-dev local on macos/ppc
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.879 s
+   (= 832040)
+  mandelbrot             0.477 s
+   (= 786476)
+  peg-match              0.238 s
+   (= 0)
+  marshal                0.365 s
+   (= 23040)
+
+  total:                 1.959 s
+
+
+=========== PPC64 r4 (G5) ===========
+=== run-bench.sh ===
+    bin:    tmp/r4-ppc64-install/janet-1.41.3-dev/bin/janet
+    bench:  tmp/bench.janet
+    runs:   5
+    host:   Darwin 8.11.0 Power Macintosh  imacg52
+
+--- run 1/5 ---
+Janet 1.41.3-dev local on macos/ppc64
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.773 s
+   (= 832040)
+  mandelbrot             0.309 s
+   (= 786476)
+  peg-match              0.250 s
+   (= 0)
+  marshal                0.324 s
+   (= 23040)
+
+  total:                 1.656 s
+
+--- run 2/5 ---
+Janet 1.41.3-dev local on macos/ppc64
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.773 s
+   (= 832040)
+  mandelbrot             0.308 s
+   (= 786476)
+  peg-match              0.250 s
+   (= 0)
+  marshal                0.323 s
+   (= 23040)
+
+  total:                 1.655 s
+
+--- run 3/5 ---
+Janet 1.41.3-dev local on macos/ppc64
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.775 s
+   (= 832040)
+  mandelbrot             0.307 s
+   (= 786476)
+  peg-match              0.250 s
+   (= 0)
+  marshal                0.324 s
+   (= 23040)
+
+  total:                 1.657 s
+
+--- run 4/5 ---
+Janet 1.41.3-dev local on macos/ppc64
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.775 s
+   (= 832040)
+  mandelbrot             0.308 s
+   (= 786476)
+  peg-match              0.250 s
+   (= 0)
+  marshal                0.325 s
+   (= 23040)
+
+  total:                 1.658 s
+
+--- run 5/5 ---
+Janet 1.41.3-dev local on macos/ppc64
+
+Workloads:
+  fib(30), mandelbrot 200x150/100-iter, peg x200 on 10200-byte text, marshal d7xf3 x80
+
+  fib                    0.775 s
+   (= 832040)
+  mandelbrot             0.309 s
+   (= 786476)
+  peg-match              0.250 s
+   (= 0)
+  marshal                0.323 s
+   (= 23040)
+
+  total:                 1.657 s
+
